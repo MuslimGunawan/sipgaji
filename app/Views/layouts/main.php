@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= esc($title ?? 'SIPGAJI - Sistem Perhitungan Gaji Otomatis') ?></title>
+
+    <!-- Instant Sidebar State Check (Prevents Page Load Re-animation Flash) -->
+    <script>
+        if (localStorage.getItem('sipgaji_sidebar_collapsed') === 'true') {
+            document.documentElement.classList.add('sidebar-collapsed');
+        }
+    </script>
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,10 +51,15 @@
             background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%);
             color: #f8fafc;
             z-index: 1000;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 4px 0 15px rgba(0,0,0,0.05);
             overflow-y: auto;
             overflow-x: hidden;
+        }
+
+        /* Smooth transitions only when user explicitly toggles */
+        body.user-toggled #sidebar,
+        body.user-toggled #content {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         #sidebar .brand {
@@ -55,7 +68,6 @@
             align-items: center;
             gap: 12px;
             border-bottom: 1px solid rgba(255,255,255,0.08);
-            transition: all 0.3s ease;
         }
 
         #sidebar .brand-logo {
@@ -105,32 +117,49 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Sidebar Collapsed / Icon-Only Mode (Desktop Only) */
+        /* Desktop Collapsed / Icon-Only Sidebar Mode */
         @media (min-width: 992px) {
+            html.sidebar-collapsed #sidebar,
             body.sidebar-collapsed #sidebar {
                 width: var(--sidebar-collapsed-width);
             }
 
+            html.sidebar-collapsed #content,
             body.sidebar-collapsed #content {
                 margin-left: var(--sidebar-collapsed-width) !important;
             }
 
+            html.sidebar-collapsed #sidebar .brand,
             body.sidebar-collapsed #sidebar .brand {
                 justify-content: center;
                 padding: 1.25rem 0.5rem;
             }
 
+            html.sidebar-collapsed #sidebar .brand-text,
+            html.sidebar-collapsed #sidebar .nav-text,
+            html.sidebar-collapsed #sidebar .team-badge-container,
             body.sidebar-collapsed #sidebar .brand-text,
             body.sidebar-collapsed #sidebar .nav-text,
-            body.sidebar-collapsed #sidebar .sidebar-category,
             body.sidebar-collapsed #sidebar .team-badge-container {
                 display: none !important;
                 opacity: 0;
             }
 
+            /* Category Dividers for Mini Sidebar Mode */
+            html.sidebar-collapsed #sidebar .sidebar-category,
+            body.sidebar-collapsed #sidebar .sidebar-category {
+                display: block !important;
+                font-size: 0 !important;
+                padding: 0 !important;
+                margin: 14px 16px 8px 16px !important;
+                border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+                height: 1px !important;
+                opacity: 1 !important;
+            }
+
+            html.sidebar-collapsed #sidebar .nav-link,
             body.sidebar-collapsed #sidebar .nav-link {
                 justify-content: center;
                 padding: 0.85rem 0;
@@ -138,12 +167,14 @@
                 border-left: none !important;
             }
 
+            html.sidebar-collapsed #sidebar .nav-link.active,
             body.sidebar-collapsed #sidebar .nav-link.active {
                 background: #6366f1;
                 color: #fff;
                 box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
             }
 
+            html.sidebar-collapsed #sidebar .nav-link i,
             body.sidebar-collapsed #sidebar .nav-link i {
                 font-size: 1.3rem;
                 margin: 0;
@@ -516,14 +547,18 @@
         document.addEventListener('DOMContentLoaded', function() {
             const toggleBtn = document.getElementById('btnToggleSidebar');
             
-            // Restore sidebar state from localStorage
+            // Sync body class with html class from initial pre-load script
             if (localStorage.getItem('sipgaji_sidebar_collapsed') === 'true') {
                 document.body.classList.add('sidebar-collapsed');
             }
 
             if (toggleBtn) {
                 toggleBtn.addEventListener('click', function() {
+                    // Enable smooth CSS transitions ONLY when user explicitly clicks toggle button
+                    document.body.classList.add('user-toggled');
                     document.body.classList.toggle('sidebar-collapsed');
+                    document.documentElement.classList.toggle('sidebar-collapsed');
+                    
                     const isCollapsed = document.body.classList.contains('sidebar-collapsed');
                     localStorage.setItem('sipgaji_sidebar_collapsed', isCollapsed);
                 });
