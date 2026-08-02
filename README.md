@@ -2,8 +2,20 @@
 
 > **Tugas Ujian Akhir Semester (UAS) / Project-Based Learning (PBL)**  
 > **Mata Kuliah:** Pemrograman Berbasis Web Lanjutan (Kelas A8)  
+> **Kelompok:** **TIM - B**  
 > **Dosen Pengampu:** Rizki Suwanda, S.T., M.Kom  
 > **Program Studi:** Teknik Informatika, Fakultas Teknik, Universitas Malikussaleh  
+
+---
+
+## 👥 Tim Kelompok (TIM - B)
+
+| No | Nama Anggota | NIM | Peran & Tanggung Jawab |
+|---|---|---|---|
+| 1 | **RAHMI SAHARA** | **240170070** | **Ketua Tim**, Perancangan ERD Database, Konfigurasi CI4 & Migration |
+| 2 | **NICOIWAN ADHA KOBAT** | **240170207** | Controller Penggajian & Logika Algoritma Perhitungan Gaji |
+| 3 | **AZKAL AZKIYA** | **240170235** | Autentikasi RBAC, Master Data & Edit Profil Karyawan |
+| 4 | **ZAHRA** | **230170012** | Desain Antarmuka Mobile-Responsive Bootstrap 5, Chart.js & Slip Gaji |
 
 ---
 
@@ -256,4 +268,4 @@ Akses aplikasi melalui peramban di URL: **`http://localhost:8080`**
 ## 📄 9. Dokumen Laporan Proyek PDF
 Laporan Proyek resmi format *Project-Based Learning (PBL)* tersimpan pada direktori root dengan nama **`Laporan_UAS_SIPGAJI.pdf`** (Ukuran A4, Margin 4-3-3-3 cm, Font Times New Roman 12pt, Spasi 1.5).
 
-*&copy; 2026 SIPGAJI - Universitas Malikussaleh*
+*&copy; 2026 SIPGAJI - TIM B - Universitas Malikussaleh*

@@ -144,15 +144,14 @@ def build_pdf():
     story.append(Image(logo_path, width=3.2*cm, height=3.2*cm))
     story.append(Spacer(1, 1.0*cm))
 
-    story.append(Paragraph("TIM KELOMPOK 1 :", subtitle_style))
+    story.append(Paragraph("TIM KELOMPOK B :", subtitle_style))
     story.append(Spacer(1, 0.3*cm))
 
     team_data = [
-        [Paragraph("<b>Ketua</b>", table_cell_style), Paragraph(":", table_cell_style), Paragraph("Koordinator Tim", table_cell_style), Paragraph("(NIM. 220170001)", table_cell_style)],
-        [Paragraph("<b>Anggota</b>", table_cell_style), Paragraph(":", table_cell_style), Paragraph("Anggota Satu", table_cell_style), Paragraph("(NIM. 220170002)", table_cell_style)],
-        [Paragraph("", table_cell_style), Paragraph(":", table_cell_style), Paragraph("Anggota Dua", table_cell_style), Paragraph("(NIM. 220170003)", table_cell_style)],
-        [Paragraph("", table_cell_style), Paragraph(":", table_cell_style), Paragraph("Anggota Tiga", table_cell_style), Paragraph("(NIM. 220170004)", table_cell_style)],
-        [Paragraph("", table_cell_style), Paragraph(":", table_cell_style), Paragraph("Anggota Empat", table_cell_style), Paragraph("(NIM. 220170005)", table_cell_style)],
+        [Paragraph("<b>Ketua Tim</b>", table_cell_style), Paragraph(":", table_cell_style), Paragraph("RAHMI SAHARA", table_cell_style), Paragraph("(NIM. 240170070)", table_cell_style)],
+        [Paragraph("<b>Anggota</b>", table_cell_style), Paragraph(":", table_cell_style), Paragraph("NICOIWAN ADHA KOBAT", table_cell_style), Paragraph("(NIM. 240170207)", table_cell_style)],
+        [Paragraph("", table_cell_style), Paragraph(":", table_cell_style), Paragraph("AZKAL AZKIYA", table_cell_style), Paragraph("(NIM. 240170235)", table_cell_style)],
+        [Paragraph("", table_cell_style), Paragraph(":", table_cell_style), Paragraph("ZAHRA", table_cell_style), Paragraph("(NIM. 230170012)", table_cell_style)],
     ]
     t_team = Table(team_data, colWidths=[2.5*cm, 0.5*cm, 6.0*cm, 4.5*cm])
     t_team.setStyle(TableStyle([
@@ -195,15 +194,14 @@ def build_pdf():
     story.append(Paragraph("2. Otomatisasi kalkulasi gaji bersih karyawan guna meminimalisir kesalahan perhitungan manual dan mempercepat proses pembuatan laporan gaji.", bullet_style))
     story.append(Paragraph("3. Menyediakan portal mandiri bagi karyawan untuk memperbarui profil (foto avatar, kontak, alamat, password) dan melihat transparansi rincian slip gaji.", bullet_style))
 
-    story.append(Paragraph("1.4 Pembagian Tugas Kelompok", heading2_style))
+    story.append(Paragraph("1.4 Pembagian Tugas Kelompok (TIM - B)", heading2_style))
     
     tugas_data = [
         [Paragraph("<b>No</b>", table_header_style), Paragraph("<b>Nama Anggota (NIM)</b>", table_header_style), Paragraph("<b>Peran & Pembagian Tugas Spesifik</b>", table_header_style)],
-        [Paragraph("1", table_cell_center), Paragraph("Koordinator Tim (220170001)", table_cell_style), Paragraph("Perancangan ERD Database, Konfigurasi Framework CI4 & Migration", table_cell_style)],
-        [Paragraph("2", table_cell_center), Paragraph("Anggota Satu (220170002)", table_cell_style), Paragraph("Pengembangan Modul Controller Penggajian & Logika Perhitungan Matematis", table_cell_style)],
-        [Paragraph("3", table_cell_center), Paragraph("Anggota Dua (220170003)", table_cell_style), Paragraph("Pengembangan Modul Autentikasi RBAC, Master Data, & Edit Profil Karyawan", table_cell_style)],
-        [Paragraph("4", table_cell_center), Paragraph("Anggota Tiga (220170004)", table_cell_style), Paragraph("Desain Antarmuka Mobile-Responsive Bootstrap 5, Chart.js, & Layout Slip Gaji", table_cell_style)],
-        [Paragraph("5", table_cell_center), Paragraph("Anggota Empat (220170005)", table_cell_style), Paragraph("Pengujian Sistem (Black Box Testing), Mock Data 15 Row, & Penyusunan Laporan", table_cell_style)],
+        [Paragraph("1", table_cell_center), Paragraph("RAHMI SAHARA (240170070)", table_cell_style), Paragraph("Ketua Tim, Perancangan ERD Database, Konfigurasi Framework CI4 & Migration", table_cell_style)],
+        [Paragraph("2", table_cell_center), Paragraph("NICOIWAN ADHA KOBAT (240170207)", table_cell_style), Paragraph("Pengembangan Modul Controller Penggajian & Logika Perhitungan Matematis", table_cell_style)],
+        [Paragraph("3", table_cell_center), Paragraph("AZKAL AZKIYA (240170235)", table_cell_style), Paragraph("Pengembangan Modul Autentikasi RBAC, Master Data, & Edit Profil Karyawan", table_cell_style)],
+        [Paragraph("4", table_cell_center), Paragraph("ZAHRA (230170012)", table_cell_style), Paragraph("Desain Antarmuka Mobile-Responsive Bootstrap 5, Chart.js, & Pengujiaan System", table_cell_style)],
     ]
     t_tugas = Table(tugas_data, colWidths=[1.0*cm, 4.5*cm, 8.5*cm])
     t_tugas.setStyle(TableStyle([
@@ -379,7 +377,7 @@ $gajiBersih    = $totalPendapatan - $totalPotongan;"""
     story.append(Paragraph("BAB V PENUTUP", heading1_style))
     story.append(Paragraph("5.1 Kesimpulan", heading2_style))
     story.append(Paragraph(
-        "Berdasarkan hasil perancangan, implementasi, dan pengujian sistem informasi penggajian karyawan berbasis CodeIgniter 4, "
+        "Berdasarkan hasil perancangan, implementasi, dan pengujian sistem informasi penggajian karyawan berbasis CodeIgniter 4 oleh Tim B, "
         "dapat disimpulkan bahwa aplikasi SIPGAJI telah berhasil dibangun sesuai dengan spesifikasi tugas UAS PBL. "
         "Sistem tidak hanya menjalankan fungsi manajemen data (CRUD) secara komprehensif, tetapi juga berhasil mengotomatiskan "
         "perhitungan gaji bersih karyawan berbasis rumus matematis formal yang mencakup seluruh komponen tunjangan, bonus lembur, "
@@ -447,18 +445,18 @@ $gajiBersih    = $totalPendapatan - $totalPotongan;"""
     story.append(t_mock)
     story.append(Spacer(1, 0.4*cm))
 
-    story.append(Paragraph("Lampiran 2. Logbook dan Dokumentasi Kegiatan Harian", heading2_style))
+    story.append(Paragraph("Lampiran 2. Logbook dan Dokumentasi Kegiatan Harian Tim B", heading2_style))
     
     logbook_headers = [Paragraph("<b>No</b>", table_header_style), Paragraph("<b>Tanggal</b>", table_header_style), Paragraph("<b>Deskripsi Kegiatan / Pekerjaan</b>", table_header_style), Paragraph("<b>Penanggung Jawab</b>", table_header_style)]
     logbook_rows = [logbook_headers]
     
     logbook_list = [
-        ("1", "20 Juli 2026", "Diskusi penentuan topik proyek penggajian otomatis dan pembagian tugas anggota kelompok.", "Semua Anggota"),
-        ("2", "22 Juli 2026", "Merancang skema ERD basis data MySQL (tabel users, jabatan, karyawan, presensi, penggajian).", "Koordinator Tim"),
-        ("3", "25 Juli 2026", "Membangun struktur framework CI4, migration, seeder mock data 15 baris, dan AuthFilter RBAC.", "Anggota 1 & 2"),
-        ("4", "28 Juli 2026", "Pengembangan Controller Penggajian, perumusan algoritma kalkulasi gaji otomatis, dan upload file.", "Anggota 1 & 3"),
-        ("5", "30 Juli 2026", "Desain antarmuka Mobile-Ready Bootstrap 5, Chart.js dashboard, dan layout cetak slip gaji karyawan.", "Anggota 3 & 4"),
-        ("6", "02 Agustus 2026", "Pengujian Black Box Testing, perbaikan upload foto admin, modul Edit Profil, dan finalisasi Laporan PBL.", "Anggota 4 & 5"),
+        ("1", "20 Juli 2026", "Diskusi penentuan topik proyek penggajian otomatis dan pembagian tugas anggota kelompok Tim B.", "RAHMI SAHARA"),
+        ("2", "22 Juli 2026", "Merancang skema ERD basis data MySQL (tabel users, jabatan, karyawan, presensi, penggajian).", "NICOIWAN ADHA KOBAT"),
+        ("3", "25 Juli 2026", "Membangun struktur framework CI4, migration, seeder mock data 15 baris, dan AuthFilter RBAC.", "AZKAL AZKIYA"),
+        ("4", "28 Juli 2026", "Pengembangan Controller Penggajian, perumusan algoritma kalkulasi gaji otomatis, dan upload file.", "RAHMI SAHARA"),
+        ("5", "30 Juli 2026", "Desain antarmuka Mobile-Ready Bootstrap 5, Chart.js dashboard, dan layout cetak slip gaji karyawan.", "ZAHRA"),
+        ("6", "02 Agustus 2026", "Pengujian Black Box Testing, perbaikan upload foto admin, modul Edit Profil, dan finalisasi Laporan PBL.", "Tim B"),
     ]
 
     for item in logbook_list:

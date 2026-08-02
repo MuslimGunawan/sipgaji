@@ -253,6 +253,17 @@
             <a href="<?= base_url('logout') ?>" class="nav-link text-danger">
                 <i class="fa-solid fa-right-from-bracket"></i> Keluar
             </a>
+
+            <!-- Badge Tim B -->
+            <div class="px-3 mt-4 pt-3 border-top border-secondary border-opacity-25">
+                <div class="p-2.5 rounded-3 bg-indigo-subtle text-white-50 text-center" style="font-size: 11px; background: rgba(99, 102, 241, 0.1);">
+                    <i class="fa-solid fa-graduation-cap me-1 text-info"></i> <strong class="text-white">TIM - B</strong>
+                    <div style="font-size: 10px;" class="mt-1 text-white-50">Pemrograman Web Lanjutan</div>
+                    <button class="btn btn-sm btn-outline-light rounded-pill mt-2 py-0 px-3" style="font-size: 10px;" data-bs-toggle="modal" data-bs-target="#modalTimInfo">
+                        <i class="fa-solid fa-users me-1"></i> Anggota Tim
+                    </button>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -305,6 +316,12 @@
             <a href="<?= base_url('logout') ?>" class="nav-link text-danger">
                 <i class="fa-solid fa-right-from-bracket"></i> Keluar
             </a>
+
+            <div class="px-3 mt-3 pt-3 border-top border-secondary border-opacity-25 text-center">
+                <button class="btn btn-sm btn-outline-info rounded-pill w-100" data-bs-toggle="modal" data-bs-target="#modalTimInfo">
+                    <i class="fa-solid fa-users me-1"></i> TIM - B Anggota
+                </button>
+            </div>
         </div>
     </div>
 
@@ -320,6 +337,10 @@
                 <h5 class="fw-bold mb-0 text-dark"><?= esc($title ?? 'Dashboard') ?></h5>
             </div>
             <div class="d-flex align-items-center gap-3">
+                <button type="button" class="btn btn-sm btn-light rounded-pill border px-3 d-none d-sm-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalTimInfo">
+                    <span class="badge bg-indigo-subtle text-primary rounded-pill">TIM - B</span>
+                    <small class="text-muted fw-semibold">Kelompok UAS</small>
+                </button>
                 <div class="text-end d-none d-md-block">
                     <div class="fw-semibold text-dark mb-0"><?= esc(session()->get('namaLengkap') ?? 'User') ?></div>
                     <span class="badge bg-primary-subtle text-primary badge-role"><?= esc(session()->get('role') ?? 'Guest') ?></span>
@@ -370,9 +391,68 @@
 
         <!-- Footer -->
         <footer class="footer d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
-            <div>&copy; 2026 <strong>SIPGAJI</strong> - Universitas Malikussaleh</div>
-            <div>Built with CodeIgniter 4 & Bootstrap 5</div>
+            <div>&copy; 2026 <strong>SIPGAJI</strong> - Pemrograman Web Lanjutan | Universitas Malikussaleh</div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-indigo-subtle text-primary fw-semibold">TIM - B</span>
+                <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none text-muted" data-bs-toggle="modal" data-bs-target="#modalTimInfo">
+                    <i class="fa-solid fa-users me-1"></i> Anggota Tim Kelompok
+                </button>
+            </div>
         </footer>
+    </div>
+
+    <!-- Modal Informasi Tim Kelompok -->
+    <div class="modal fade" id="modalTimInfo" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header bg-gradient-indigo text-white rounded-top-4">
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0"><i class="fa-solid fa-graduation-cap me-2"></i> TIM - B</h5>
+                        <small style="font-size: 0.78rem;" class="opacity-75">Pemrograman Berbasis Web Lanjutan (Kelas A8)</small>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="alert alert-primary bg-primary-subtle text-primary border-0 rounded-3 mb-3 py-2" style="font-size: 0.85rem;">
+                        <i class="fa-solid fa-circle-info me-1"></i> Projek UAS PBL: <strong>Sistem Informasi Penggajian Karyawan (SIPGAJI)</strong>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-2" style="font-size: 0.9rem;">Daftar Anggota Kelompok:</h6>
+                    <div class="list-group list-group-flush rounded-3 border">
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2.5">
+                            <div>
+                                <div class="fw-bold text-dark">NICOIWAN ADHA KOBAT</div>
+                                <small class="text-muted" style="font-size: 0.78rem;">NIM. 240170207</small>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">Anggota</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2.5 bg-success-subtle">
+                            <div>
+                                <div class="fw-bold text-success">RAHMI SAHARA</div>
+                                <small class="text-muted" style="font-size: 0.78rem;">NIM. 240170070</small>
+                            </div>
+                            <span class="badge bg-success rounded-pill">Ketua Tim</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2.5">
+                            <div>
+                                <div class="fw-bold text-dark">AZKAL AZKIYA</div>
+                                <small class="text-muted" style="font-size: 0.78rem;">NIM. 240170235</small>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">Anggota</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2.5 bg-light">
+                            <div>
+                                <div class="fw-bold text-dark">ZAHRA</div>
+                                <small class="text-muted" style="font-size: 0.78rem;">NIM. 230170012</small>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">Anggota</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-secondary rounded-pill w-100" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Bootstrap 5 JS Bundle -->
