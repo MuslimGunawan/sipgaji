@@ -180,8 +180,7 @@ class DatabaseSeeder extends Seeder
         }
         $db->table('karyawan')->insertBatch($karyawanData);
 
-        // 4. Seed Presensi & Penggajian MULTI-BULAN (Januari 2026 s/d Agustus 2026) untuk 50 Karyawan
-        // Total Record: 50 Karyawan x 8 Bulan = 400 Entri Presensi & 400 Slip Penggajian!
+        // 4. Seed Presensi & Penggajian DENGAN DINAMIKA GELOMBANG DIVERSIFIKASI REALISTIS (Januari 2026 s/d Agustus 2026)
         $presensiData = [];
         $penggajianData = [];
 
@@ -193,18 +192,30 @@ class DatabaseSeeder extends Seeder
         $presensiIdCounter = 1;
         $penggajianIdCounter = 1;
 
-        // Iterasi Bulan 1 s/d Bulan 8 Tahun 2026
-        for ($bulan = 1; $bulan <= 8; $bulan++) {
-            $strBulan = str_pad($bulan, 2, '0', STR_PAD_LEFT);
+        // Dynamic employee count per month (Simulasi pertumbuhan SDM & variasi jam lembur perusahaan)
+        $bulanConfigs = [
+            1 => ['max_karyawan' => 40, 'min_lembur' => 0,  'max_lembur' => 4,  'avg_hadir' => 19], // Jan: ~365M
+            2 => ['max_karyawan' => 43, 'min_lembur' => 2,  'max_lembur' => 6,  'avg_hadir' => 20], // Feb: ~395M
+            3 => ['max_karyawan' => 46, 'min_lembur' => 8,  'max_lembur' => 14, 'avg_hadir' => 21], // Mar: ~438M (Lembur Tinggi)
+            4 => ['max_karyawan' => 47, 'min_lembur' => 1,  'max_lembur' => 5,  'avg_hadir' => 20], // Apr: ~418M
+            5 => ['max_karyawan' => 49, 'min_lembur' => 6,  'max_lembur' => 12, 'avg_hadir' => 21], // Mei: ~452M
+            6 => ['max_karyawan' => 50, 'min_lembur' => 4,  'max_lembur' => 10, 'avg_hadir' => 21], // Jun: ~460M
+            7 => ['max_karyawan' => 50, 'min_lembur' => 5,  'max_lembur' => 12, 'avg_hadir' => 22], // Jul: ~468M
+            8 => ['max_karyawan' => 50, 'min_lembur' => 12, 'max_lembur' => 20, 'avg_hadir' => 22], // Agt: ~495M (Lembur Puncak)
+        ];
 
-            for ($kId = 1; $kId <= 50; $kId++) {
-                // Randomize attendance & overtime realistically per month
-                $hadir  = rand(20, 22);
+        for ($bulan = 1; $bulan <= 8; $bulan++) {
+            $cfg = $bulanConfigs[$bulan];
+            $strBulan = str_pad($bulan, 2, '0', STR_PAD_LEFT);
+            $totalEmpMonth = $cfg['max_karyawan'];
+
+            for ($kId = 1; $kId <= $totalEmpMonth; $kId++) {
+                $hadir  = min(22, rand($cfg['avg_hadir'] - 1, $cfg['avg_hadir'] + 1));
                 $sakit  = rand(0, 1);
                 $izin   = rand(0, 1);
                 $alpa   = 22 - ($hadir + $sakit + $izin);
                 if ($alpa < 0) $alpa = 0;
-                $lembur = rand(0, 16);
+                $lembur = rand($cfg['min_lembur'], $cfg['max_lembur']);
 
                 $presensiData[] = [
                     'id'                => $presensiIdCounter,
@@ -280,7 +291,7 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // Insert in batches of 100 to optimize performance
+        // Insert in batches
         foreach (array_chunk($presensiData, 100) as $chunk) {
             $db->table('presensi')->insertBatch($chunk);
         }

@@ -7,7 +7,14 @@
     <div class="col-12 col-md-4">
         <div class="card card-custom p-4 text-center">
             <div class="mb-3">
-                <img src="<?= base_url('uploads/karyawan/' . (session()->get('foto') ?: 'default.png')) ?>" class="rounded-circle shadow-sm" style="width: 120px; height: 120px; object-fit: cover;" alt="Avatar">
+                <?php 
+                    $profileFoto = ($karyawan && !empty($karyawan['foto'])) ? $karyawan['foto'] : (session()->get('foto') ?: 'default.png');
+                    $profileFotoPath = FCPATH . 'uploads/karyawan/' . $profileFoto;
+                    if ($profileFoto !== 'default.png' && !file_exists($profileFotoPath)) {
+                        $profileFoto = 'default.png';
+                    }
+                ?>
+                <img src="<?= base_url('uploads/karyawan/' . $profileFoto) ?>" class="rounded-circle shadow-sm border border-2 border-primary" style="width: 120px; height: 120px; object-fit: cover;" alt="Avatar">
             </div>
             <h5 class="fw-bold mb-1"><?= esc(session()->get('namaLengkap') ?? session()->get('username')) ?></h5>
             <p class="text-muted mb-2" style="font-size: 0.85rem;"><i class="fa-solid fa-envelope me-1"></i> <?= esc(session()->get('email')) ?></p>

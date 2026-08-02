@@ -430,8 +430,12 @@
                     <span class="badge bg-primary-subtle text-primary badge-role"><?= esc(session()->get('role') ?? 'Guest') ?></span>
                 </div>
                 <a href="<?= base_url('profile') ?>" class="text-decoration-none">
-                    <?php if (session()->get('foto') && session()->get('foto') !== 'default.png'): ?>
-                        <img src="<?= base_url('uploads/karyawan/' . session()->get('foto')) ?>" class="rounded-circle border border-2 border-primary shadow-sm" style="width: 42px; height: 42px; object-fit: cover;" alt="Avatar">
+                    <?php 
+                        $userFoto = session()->get('foto');
+                        $fotoPath = FCPATH . 'uploads/karyawan/' . $userFoto;
+                        if ($userFoto && $userFoto !== 'default.png' && file_exists($fotoPath)): 
+                    ?>
+                        <img src="<?= base_url('uploads/karyawan/' . $userFoto) ?>" class="rounded-circle border border-2 border-primary shadow-sm" style="width: 42px; height: 42px; object-fit: cover;" alt="Avatar">
                     <?php else: ?>
                         <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 42px; height: 42px;">
                             <?= strtoupper(substr(session()->get('username') ?? 'U', 0, 1)) ?>
