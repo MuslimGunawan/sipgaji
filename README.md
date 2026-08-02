@@ -159,40 +159,38 @@ erDiagram
 
 ```mermaid
 flowchart TD
-    Start([Mulai Aplikasi Web]) --> Login[Input Username & Password di /login]
-    Login --> AuthCheck{Autentikasi & Role?}
+    Start["Mulai Aplikasi Web"] --> Login["Input Username & Password di /login"]
+    Login --> AuthCheck{"Autentikasi & Role?"}
     
-    AuthCheck -- Role: Admin --> AdminDashboard[Dashboard Admin & Stats Chart.js]
-    AuthCheck -- Role: Karyawan --> UserDashboard[Dashboard Karyawan & Status Slip]
+    AuthCheck -- "Role: Admin" --> AdminDashboard["Dashboard Admin & Stats Chart.js"]
+    AuthCheck -- "Role: Karyawan" --> UserDashboard["Dashboard Karyawan & Status Slip"]
 
-    %% Alur Admin
-    AdminDashboard --> AdminMenu{Pilih Menu Admin}
-    AdminMenu -->|Data Jabatan| JabatanCRUD[CRUD Jabatan & Set Gaji Pokok/Tunjangan]
-    AdminMenu -->|Data Karyawan| KaryawanCRUD[CRUD Karyawan + Upload Foto + Auto User]
-    AdminMenu -->|Rekap Presensi| PresensiInput[Input Hari Hadir, Sakit, Izin, Alpa, Lembur]
-    AdminMenu -->|Penggajian| HitungGaji[Klik Tombol 'Hitung Gaji Otomatis']
+    AdminDashboard --> AdminMenu{"Pilih Menu Admin"}
+    AdminMenu -- "Data Jabatan" --> JabatanCRUD["CRUD Jabatan & Set Gaji Pokok/Tunjangan"]
+    AdminMenu -- "Data Karyawan" --> KaryawanCRUD["CRUD Karyawan + Upload Foto + Auto User"]
+    AdminMenu -- "Rekap Presensi" --> PresensiInput["Input Hari Hadir, Sakit, Izin, Alpa, Lembur"]
+    AdminMenu -- "Penggajian" --> HitungGaji["Klik Tombol 'Hitung Gaji Otomatis'"]
 
-    HitungGaji --> ComputeEngine[Proses Komputasi Matematis Otomatis]
+    HitungGaji --> ComputeEngine["Proses Komputasi Matematis Otomatis"]
     
-    subgraph Logika Komputasi Matematis (Penggajian Controller)
-        ComputeEngine --> C1[1. Tunj Kehadiran = Hadir * Makan + Transport]
-        ComputeEngine --> C2[2. Tunj Keluarga = 10% Gaji + 5% per Anak Max 2]
-        ComputeEngine --> C3[3. Bonus Lembur = Jam Lembur * 1.5 * Gaji / 173]
-        ComputeEngine --> C4[4. Total Gross = Gaji Pokok + Tunjangan + Lembur]
-        ComputeEngine --> C5[5. Total Potongan = BPJS 1% + BPJS 2% + PPh21 5% + Alpa*Gaji/22]
-        ComputeEngine --> C6[6. Gaji Bersih = Total Gross - Total Potongan]
+    subgraph Engine ["Logika Komputasi Matematis"]
+        ComputeEngine --> C1["1. Tunj Kehadiran = Hadir * Makan + Transport"]
+        ComputeEngine --> C2["2. Tunj Keluarga = 10% Gaji + 5% per Anak Max 2"]
+        ComputeEngine --> C3["3. Bonus Lembur = Jam Lembur * 1.5 * Gaji / 173"]
+        ComputeEngine --> C4["4. Total Gross = Gaji Pokok + Tunjangan + Lembur"]
+        ComputeEngine --> C5["5. Total Potongan = BPJS 1% + BPJS 2% + PPh21 5% + Alpa * Gaji / 22"]
+        ComputeEngine --> C6["6. Gaji Bersih = Total Gross - Total Potongan"]
     end
 
-    C6 --> SavePayroll[Simpan Hasil ke Tabel Penggajian & Status Lunas]
-    SavePayroll --> PrintSlip[Upload Bukti Transfer & Cetak Slip Gaji PDF]
+    C6 --> SavePayroll["Simpan Hasil ke Tabel Penggajian & Status Lunas"]
+    SavePayroll --> PrintSlip["Upload Bukti Transfer & Cetak Slip Gaji PDF"]
 
-    %% Alur Karyawan
-    UserDashboard --> UserMenu{Pilih Menu Karyawan}
-    UserMenu -->|Edit Profil| EditProfile[Update Foto Avatar, No WA, Alamat, Ganti Password]
-    UserMenu -->|Presensi Saya| ViewPresensi[Lihat Rekap Kehadiran Saya]
-    UserMenu -->|Slip Gaji Saya| ViewSlip[Lihat & Cetak Slip Gaji Resmi]
+    UserDashboard --> UserMenu{"Pilih Menu Karyawan"}
+    UserMenu -- "Edit Profil" --> EditProfile["Update Foto Avatar, No WA, Alamat, Ganti Password"]
+    UserMenu -- "Presensi Saya" --> ViewPresensi["Lihat Rekap Kehadiran Saya"]
+    UserMenu -- "Slip Gaji Saya" --> ViewSlip["Lihat & Cetak Slip Gaji Resmi"]
 
-    PrintSlip --> End([Selesai])
+    PrintSlip --> End(["Selesai"])
     ViewSlip --> End
     EditProfile --> End
 ```
