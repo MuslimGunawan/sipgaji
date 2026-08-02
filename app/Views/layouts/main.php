@@ -18,6 +18,7 @@
     <style>
         :root {
             --sidebar-width: 260px;
+            --sidebar-collapsed-width: 78px;
             --primary-color: #4f46e5;
             --primary-hover: #4338ca;
             --bg-light: #f8fafc;
@@ -45,6 +46,7 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 4px 0 15px rgba(0,0,0,0.05);
             overflow-y: auto;
+            overflow-x: hidden;
         }
 
         #sidebar .brand {
@@ -53,6 +55,7 @@
             align-items: center;
             gap: 12px;
             border-bottom: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.3s ease;
         }
 
         #sidebar .brand-logo {
@@ -67,6 +70,7 @@
             font-weight: 800;
             color: #fff;
             box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+            flex-shrink: 0;
         }
 
         #sidebar .nav-link {
@@ -79,6 +83,7 @@
             align-items: center;
             gap: 12px;
             transition: all 0.2s ease;
+            white-space: nowrap;
         }
 
         #sidebar .nav-link:hover, #sidebar .nav-link.active {
@@ -90,6 +95,8 @@
         #sidebar .nav-link i {
             font-size: 1.1rem;
             width: 24px;
+            text-align: center;
+            flex-shrink: 0;
         }
 
         /* Main Content */
@@ -101,13 +108,46 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Sidebar Collapsed State for Desktop */
-        body.sidebar-collapsed #sidebar {
-            transform: translateX(-100%);
-        }
+        /* Sidebar Collapsed / Icon-Only Mode (Desktop Only) */
+        @media (min-width: 992px) {
+            body.sidebar-collapsed #sidebar {
+                width: var(--sidebar-collapsed-width);
+            }
 
-        body.sidebar-collapsed #content {
-            margin-left: 0 !important;
+            body.sidebar-collapsed #content {
+                margin-left: var(--sidebar-collapsed-width) !important;
+            }
+
+            body.sidebar-collapsed #sidebar .brand {
+                justify-content: center;
+                padding: 1.25rem 0.5rem;
+            }
+
+            body.sidebar-collapsed #sidebar .brand-text,
+            body.sidebar-collapsed #sidebar .nav-text,
+            body.sidebar-collapsed #sidebar .sidebar-category,
+            body.sidebar-collapsed #sidebar .team-badge-container {
+                display: none !important;
+                opacity: 0;
+            }
+
+            body.sidebar-collapsed #sidebar .nav-link {
+                justify-content: center;
+                padding: 0.85rem 0;
+                margin: 6px 12px;
+                border-left: none !important;
+            }
+
+            body.sidebar-collapsed #sidebar .nav-link.active {
+                background: #6366f1;
+                color: #fff;
+                box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            }
+
+            body.sidebar-collapsed #sidebar .nav-link i {
+                font-size: 1.3rem;
+                margin: 0;
+            }
         }
 
         .top-header {
@@ -217,54 +257,54 @@
     <nav id="sidebar">
         <div class="brand">
             <div class="brand-logo"><i class="fa-solid fa-calculator"></i></div>
-            <div>
+            <div class="brand-text">
                 <h6 class="mb-0 fw-bold text-white">SIPGAJI</h6>
                 <small class="text-white-50" style="font-size: 11px;">System Payroll CI4</small>
             </div>
         </div>
 
         <div class="mt-3">
-            <div class="px-3 mb-2 text-uppercase font-monospace text-white-50" style="font-size: 10px;">Menu Utama</div>
-            <a href="<?= base_url('dashboard') ?>" class="nav-link <?= uri_string() === 'dashboard' ? 'active' : '' ?>">
-                <i class="fa-solid fa-chart-pie"></i> Dashboard
+            <div class="px-3 mb-2 text-uppercase font-monospace text-white-50 sidebar-category" style="font-size: 10px;">Menu Utama</div>
+            <a href="<?= base_url('dashboard') ?>" class="nav-link <?= uri_string() === 'dashboard' ? 'active' : '' ?>" title="Dashboard">
+                <i class="fa-solid fa-chart-pie"></i> <span class="nav-text">Dashboard</span>
             </a>
-            <a href="<?= base_url('profile') ?>" class="nav-link <?= uri_string() === 'profile' ? 'active' : '' ?>">
-                <i class="fa-solid fa-user-gear"></i> Edit Profil Saya
+            <a href="<?= base_url('profile') ?>" class="nav-link <?= uri_string() === 'profile' ? 'active' : '' ?>" title="Edit Profil Saya">
+                <i class="fa-solid fa-user-gear"></i> <span class="nav-text">Edit Profil Saya</span>
             </a>
 
             <?php if (session()->get('role') === 'admin'): ?>
-                <div class="px-3 mt-4 mb-2 text-uppercase font-monospace text-white-50" style="font-size: 10px;">Master Data</div>
-                <a href="<?= base_url('jabatan') ?>" class="nav-link <?= uri_string() === 'jabatan' ? 'active' : '' ?>">
-                    <i class="fa-solid fa-briefcase"></i> Data Jabatan
+                <div class="px-3 mt-4 mb-2 text-uppercase font-monospace text-white-50 sidebar-category" style="font-size: 10px;">Master Data</div>
+                <a href="<?= base_url('jabatan') ?>" class="nav-link <?= uri_string() === 'jabatan' ? 'active' : '' ?>" title="Data Jabatan">
+                    <i class="fa-solid fa-briefcase"></i> <span class="nav-text">Data Jabatan</span>
                 </a>
-                <a href="<?= base_url('karyawan') ?>" class="nav-link <?= uri_string() === 'karyawan' ? 'active' : '' ?>">
-                    <i class="fa-solid fa-users"></i> Data Karyawan
+                <a href="<?= base_url('karyawan') ?>" class="nav-link <?= uri_string() === 'karyawan' ? 'active' : '' ?>" title="Data Karyawan">
+                    <i class="fa-solid fa-users"></i> <span class="nav-text">Data Karyawan</span>
                 </a>
 
-                <div class="px-3 mt-4 mb-2 text-uppercase font-monospace text-white-50" style="font-size: 10px;">Transaksi & Komputasi</div>
-                <a href="<?= base_url('presensi') ?>" class="nav-link <?= uri_string() === 'presensi' ? 'active' : '' ?>">
-                    <i class="fa-solid fa-calendar-check"></i> Rekap Presensi
+                <div class="px-3 mt-4 mb-2 text-uppercase font-monospace text-white-50 sidebar-category" style="font-size: 10px;">Transaksi & Komputasi</div>
+                <a href="<?= base_url('presensi') ?>" class="nav-link <?= uri_string() === 'presensi' ? 'active' : '' ?>" title="Rekap Presensi">
+                    <i class="fa-solid fa-calendar-check"></i> <span class="nav-text">Rekap Presensi</span>
                 </a>
-                <a href="<?= base_url('penggajian') ?>" class="nav-link <?= uri_string() === 'penggajian' ? 'active' : '' ?>">
-                    <i class="fa-solid fa-money-bill-wave"></i> Perhitungan Gaji
+                <a href="<?= base_url('penggajian') ?>" class="nav-link <?= uri_string() === 'penggajian' ? 'active' : '' ?>" title="Perhitungan Gaji">
+                    <i class="fa-solid fa-money-bill-wave"></i> <span class="nav-text">Perhitungan Gaji</span>
                 </a>
             <?php else: ?>
-                <div class="px-3 mt-4 mb-2 text-uppercase font-monospace text-white-50" style="font-size: 10px;">Layanan Karyawan</div>
-                <a href="<?= base_url('presensi') ?>" class="nav-link <?= uri_string() === 'presensi' ? 'active' : '' ?>">
-                    <i class="fa-solid fa-calendar-days"></i> Presensi Saya
+                <div class="px-3 mt-4 mb-2 text-uppercase font-monospace text-white-50 sidebar-category" style="font-size: 10px;">Layanan Karyawan</div>
+                <a href="<?= base_url('presensi') ?>" class="nav-link <?= uri_string() === 'presensi' ? 'active' : '' ?>" title="Presensi Saya">
+                    <i class="fa-solid fa-calendar-days"></i> <span class="nav-text">Presensi Saya</span>
                 </a>
-                <a href="<?= base_url('penggajian') ?>" class="nav-link <?= uri_string() === 'penggajian' ? 'active' : '' ?>">
-                    <i class="fa-solid fa-receipt"></i> Slip Gaji Saya
+                <a href="<?= base_url('penggajian') ?>" class="nav-link <?= uri_string() === 'penggajian' ? 'active' : '' ?>" title="Slip Gaji Saya">
+                    <i class="fa-solid fa-receipt"></i> <span class="nav-text">Slip Gaji Saya</span>
                 </a>
             <?php endif; ?>
 
-            <div class="px-3 mt-4 mb-2 text-uppercase font-monospace text-white-50" style="font-size: 10px;">Akun</div>
-            <a href="<?= base_url('logout') ?>" class="nav-link text-danger">
-                <i class="fa-solid fa-right-from-bracket"></i> Keluar
+            <div class="px-3 mt-4 mb-2 text-uppercase font-monospace text-white-50 sidebar-category" style="font-size: 10px;">Akun</div>
+            <a href="<?= base_url('logout') ?>" class="nav-link text-danger" title="Keluar">
+                <i class="fa-solid fa-right-from-bracket"></i> <span class="nav-text">Keluar</span>
             </a>
 
             <!-- Badge Tim B -->
-            <div class="px-3 mt-4 pt-3 border-top border-secondary border-opacity-25">
+            <div class="px-3 mt-4 pt-3 border-top border-secondary border-opacity-25 team-badge-container">
                 <div class="p-2.5 rounded-3 bg-indigo-subtle text-white-50 text-center" style="font-size: 11px; background: rgba(99, 102, 241, 0.1);">
                     <i class="fa-solid fa-graduation-cap me-1 text-info"></i> <strong class="text-white">TIM - B</strong>
                     <div style="font-size: 10px;" class="mt-1 text-white-50">Pemrograman Web Lanjutan</div>
@@ -340,8 +380,8 @@
         <header class="top-header">
             <div class="d-flex align-items-center gap-2">
                 <!-- Desktop Sidebar Toggle Button -->
-                <button id="btnToggleSidebar" class="btn btn-light rounded-circle border shadow-sm p-2 d-none d-lg-flex align-items-center justify-content-center" type="button" style="width: 38px; height: 38px;" title="Sembunyikan / Tampilkan Sidebar">
-                    <i class="fa-solid fa-indent fs-5 text-secondary" id="toggleIcon"></i>
+                <button id="btnToggleSidebar" class="btn btn-light rounded-circle border shadow-sm p-2 d-none d-lg-flex align-items-center justify-content-center" type="button" style="width: 38px; height: 38px;" title="Kecilkan / Perbesar Sidebar">
+                    <i class="fa-solid fa-bars-staggered fs-5 text-secondary" id="toggleIcon"></i>
                 </button>
                 <!-- Mobile Toggle Button -->
                 <button class="btn btn-light d-lg-none rounded-circle border shadow-sm p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
@@ -475,15 +515,10 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const toggleBtn = document.getElementById('btnToggleSidebar');
-            const toggleIcon = document.getElementById('toggleIcon');
             
             // Restore sidebar state from localStorage
             if (localStorage.getItem('sipgaji_sidebar_collapsed') === 'true') {
                 document.body.classList.add('sidebar-collapsed');
-                if (toggleIcon) {
-                    toggleIcon.classList.remove('fa-indent');
-                    toggleIcon.classList.add('fa-outdent');
-                }
             }
 
             if (toggleBtn) {
@@ -491,16 +526,6 @@
                     document.body.classList.toggle('sidebar-collapsed');
                     const isCollapsed = document.body.classList.contains('sidebar-collapsed');
                     localStorage.setItem('sipgaji_sidebar_collapsed', isCollapsed);
-
-                    if (toggleIcon) {
-                        if (isCollapsed) {
-                            toggleIcon.classList.remove('fa-indent');
-                            toggleIcon.classList.add('fa-outdent');
-                        } else {
-                            toggleIcon.classList.remove('fa-outdent');
-                            toggleIcon.classList.add('fa-indent');
-                        }
-                    }
                 });
             }
         });
