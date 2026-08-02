@@ -138,7 +138,7 @@ def build_pdf():
     # COVER (Format 1)
     story.append(Paragraph("SISTEM INFORMASI PENGGAJIAN KARYAWAN DENGAN PERHITUNGAN GAJI OTOMATIS BERBASIS WEB MENGGUNAKAN CODEIGNITER 4", title_style))
     story.append(Spacer(1, 0.6*cm))
-    story.append(Paragraph("PEMROGRAMAN WEB LANJUTAN<br/>KELAS A8", subtitle_style))
+    story.append(Paragraph("PEMROGRAMAN WEB LANJUTAN<br/>KELAS A5", subtitle_style))
     story.append(Spacer(1, 1.0*cm))
 
     story.append(Image(logo_path, width=3.2*cm, height=3.2*cm))

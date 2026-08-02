@@ -496,7 +496,7 @@
                 <div class="modal-header bg-gradient-indigo text-white rounded-top-4">
                     <div>
                         <h5 class="modal-title fw-bold mb-0"><i class="fa-solid fa-graduation-cap me-2"></i> TIM - B</h5>
-                        <small style="font-size: 0.78rem;" class="opacity-75">Pemrograman Berbasis Web Lanjutan (Kelas A8)</small>
+                        <small style="font-size: 0.78rem;" class="opacity-75">Pemrograman Berbasis Web Lanjutan (Kelas A5)</small>
                     </div>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>

@@ -1,7 +1,7 @@
 # Sistem Informasi Penggajian Karyawan (SIPGAJI) Berbasis Web Menggunakan CodeIgniter 4
 
 > **Tugas Ujian Akhir Semester (UAS) / Project-Based Learning (PBL)**  
-> **Mata Kuliah:** Pemrograman Berbasis Web Lanjutan (Kelas A8)  
+> **Mata Kuliah:** Pemrograman Berbasis Web Lanjutan (Kelas A5)  
 > **Kelompok:** **TIM - B**  
 > **Dosen Pengampu:** Rizki Suwanda, S.T., M.Kom  
 > **Program Studi:** Teknik Informatika, Fakultas Teknik, Universitas Malikussaleh  
