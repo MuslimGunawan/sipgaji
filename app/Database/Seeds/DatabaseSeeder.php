@@ -103,7 +103,7 @@ class DatabaseSeeder extends Seeder
         ];
         $db->table('jabatan')->insertBatch($jabatanData);
 
-        // 3. Seed 50 Karyawan Real & Presisi
+        // 3. Seed 50 Karyawan Real
         $rawKaryawan = [
             ['NIP2026001', 'Ahmad Rizki', 'L', 'Lhokseumawe', '1992-05-14', 'Jl. Merdeka No. 12, Lhokseumawe', '081269001111', 1, 2, 'Menikah', 2],
             ['NIP2026002', 'Budi Santoso', 'L', 'Banda Aceh', '1994-08-20', 'Jl. T. Umar No. 45, Banda Aceh', '081269002222', 2, 3, 'Menikah', 1],
@@ -180,7 +180,8 @@ class DatabaseSeeder extends Seeder
         }
         $db->table('karyawan')->insertBatch($karyawanData);
 
-        // 4. Seed Presensi & Penggajian (Bulan 7, Tahun 2026) untuk 50 Karyawan
+        // 4. Seed Presensi & Penggajian MULTI-BULAN (Januari 2026 s/d Agustus 2026) untuk 50 Karyawan
+        // Total Record: 50 Karyawan x 8 Bulan = 400 Entri Presensi & 400 Slip Penggajian!
         $presensiData = [];
         $penggajianData = [];
 
@@ -189,86 +190,103 @@ class DatabaseSeeder extends Seeder
             $jabatanMap[$j['id']] = $j;
         }
 
-        for ($kId = 1; $kId <= 50; $kId++) {
-            // Randomize attendance & overtime realistically
-            $hadir  = rand(20, 22);
-            $sakit  = rand(0, 1);
-            $izin   = rand(0, 1);
-            $alpa   = 22 - ($hadir + $sakit + $izin);
-            if ($alpa < 0) $alpa = 0;
-            $lembur = rand(2, 16);
+        $presensiIdCounter = 1;
+        $penggajianIdCounter = 1;
 
-            $presensiData[] = [
-                'id'                => $kId,
-                'karyawan_id'       => $kId,
-                'bulan'             => 7,
-                'tahun'             => 2026,
-                'jumlah_hadir'      => $hadir,
-                'jumlah_sakit'      => $sakit,
-                'jumlah_izin'       => $izin,
-                'jumlah_alpa'       => $alpa,
-                'jumlah_lembur_jam' => $lembur,
-                'created_at'        => $now,
-                'updated_at'        => $now,
-            ];
+        // Iterasi Bulan 1 s/d Bulan 8 Tahun 2026
+        for ($bulan = 1; $bulan <= 8; $bulan++) {
+            $strBulan = str_pad($bulan, 2, '0', STR_PAD_LEFT);
 
-            // Calculation Logic
-            $karyawan = $karyawanData[$kId - 1];
-            $jabatan  = $jabatanMap[$karyawan['jabatan_id']];
+            for ($kId = 1; $kId <= 50; $kId++) {
+                // Randomize attendance & overtime realistically per month
+                $hadir  = rand(20, 22);
+                $sakit  = rand(0, 1);
+                $izin   = rand(0, 1);
+                $alpa   = 22 - ($hadir + $sakit + $izin);
+                if ($alpa < 0) $alpa = 0;
+                $lembur = rand(0, 16);
 
-            $gajiPokok   = (float)$jabatan['gaji_pokok'];
-            $tunjJabatan = (float)$jabatan['tunj_jabatan'];
-            
-            $tunjKehadiran = ($hadir * (float)$jabatan['tunj_makan_per_hari']) + ($hadir * (float)$jabatan['tunj_transport_per_hari']);
+                $presensiData[] = [
+                    'id'                => $presensiIdCounter,
+                    'karyawan_id'       => $kId,
+                    'bulan'             => $bulan,
+                    'tahun'             => 2026,
+                    'jumlah_hadir'      => $hadir,
+                    'jumlah_sakit'      => $sakit,
+                    'jumlah_izin'       => $izin,
+                    'jumlah_alpa'       => $alpa,
+                    'jumlah_lembur_jam' => $lembur,
+                    'created_at'        => $now,
+                    'updated_at'        => $now,
+                ];
 
-            $tunjKeluarga = 0.00;
-            if ($karyawan['status_nikah'] === 'Menikah') {
-                $tunjKeluarga += 0.10 * $gajiPokok;
-                $anakCount = min(2, (int)$karyawan['jumlah_anak']);
-                $tunjKeluarga += (0.05 * $gajiPokok * $anakCount);
+                // Calculation Logic
+                $karyawan = $karyawanData[$kId - 1];
+                $jabatan  = $jabatanMap[$karyawan['jabatan_id']];
+
+                $gajiPokok   = (float)$jabatan['gaji_pokok'];
+                $tunjJabatan = (float)$jabatan['tunj_jabatan'];
+                
+                $tunjKehadiran = ($hadir * (float)$jabatan['tunj_makan_per_hari']) + ($hadir * (float)$jabatan['tunj_transport_per_hari']);
+
+                $tunjKeluarga = 0.00;
+                if ($karyawan['status_nikah'] === 'Menikah') {
+                    $tunjKeluarga += 0.10 * $gajiPokok;
+                    $anakCount = min(2, (int)$karyawan['jumlah_anak']);
+                    $tunjKeluarga += (0.05 * $gajiPokok * $anakCount);
+                }
+
+                $bonusLembur = $lembur * (1.5 * ($gajiPokok / 173));
+
+                $totalPendapatan = $gajiPokok + $tunjJabatan + $tunjKehadiran + $tunjKeluarga + $bonusLembur;
+
+                $potBpjsKs = 0.01 * $gajiPokok;
+                $potBpjsTk = 0.02 * $gajiPokok;
+                $potPph21  = 0.05 * $gajiPokok;
+                $potAbsensi= $alpa * ($gajiPokok / 22.0);
+
+                $totalPotongan = $potBpjsKs + $potBpjsTk + $potPph21 + $potAbsensi;
+                $gajiBersih    = $totalPendapatan - $totalPotongan;
+
+                $kodeTrx = 'TRX-PAY-2026' . $strBulan . '-' . str_pad($kId, 3, '0', STR_PAD_LEFT);
+
+                $penggajianData[] = [
+                    'id'                  => $penggajianIdCounter,
+                    'kode_transaksi'      => $kodeTrx,
+                    'karyawan_id'         => $kId,
+                    'bulan'               => $bulan,
+                    'tahun'               => 2026,
+                    'gaji_pokok'          => round($gajiPokok, 2),
+                    'tunj_jabatan'        => round($tunjJabatan, 2),
+                    'tunj_kehadiran'      => round($tunjKehadiran, 2),
+                    'tunj_keluarga'       => round($tunjKeluarga, 2),
+                    'bonus_lembur'        => round($bonusLembur, 2),
+                    'total_pendapatan'    => round($totalPendapatan, 2),
+                    'pot_bpjs_ks'         => round($potBpjsKs, 2),
+                    'pot_bpjs_tk'         => round($potBpjsTk, 2),
+                    'pot_pph21'           => round($potPph21, 2),
+                    'pot_absensi'         => round($potAbsensi, 2),
+                    'total_potongan'      => round($totalPotongan, 2),
+                    'gaji_bersih'         => round($gajiBersih, 2),
+                    'foto_bukti_transfer' => null,
+                    'tanggal_dibayar'     => "2026-$strBulan-28 10:00:00",
+                    'status_bayar'        => 'Lunas',
+                    'created_at'          => $now,
+                    'updated_at'          => $now,
+                ];
+
+                $presensiIdCounter++;
+                $penggajianIdCounter++;
             }
-
-            $bonusLembur = $lembur * (1.5 * ($gajiPokok / 173));
-
-            $totalPendapatan = $gajiPokok + $tunjJabatan + $tunjKehadiran + $tunjKeluarga + $bonusLembur;
-
-            $potBpjsKs = 0.01 * $gajiPokok;
-            $potBpjsTk = 0.02 * $gajiPokok;
-            $potPph21  = 0.05 * $gajiPokok;
-            $potAbsensi= $alpa * ($gajiPokok / 22.0);
-
-            $totalPotongan = $potBpjsKs + $potBpjsTk + $potPph21 + $potAbsensi;
-            $gajiBersih    = $totalPendapatan - $totalPotongan;
-
-            $kodeTrx = 'TRX-PAY-202607-' . str_pad($kId, 3, '0', STR_PAD_LEFT);
-
-            $penggajianData[] = [
-                'id'                  => $kId,
-                'kode_transaksi'      => $kodeTrx,
-                'karyawan_id'         => $kId,
-                'bulan'               => 7,
-                'tahun'               => 2026,
-                'gaji_pokok'          => round($gajiPokok, 2),
-                'tunj_jabatan'        => round($tunjJabatan, 2),
-                'tunj_kehadiran'      => round($tunjKehadiran, 2),
-                'tunj_keluarga'       => round($tunjKeluarga, 2),
-                'bonus_lembur'        => round($bonusLembur, 2),
-                'total_pendapatan'    => round($totalPendapatan, 2),
-                'pot_bpjs_ks'         => round($potBpjsKs, 2),
-                'pot_bpjs_tk'         => round($potBpjsTk, 2),
-                'pot_pph21'           => round($potPph21, 2),
-                'pot_absensi'         => round($potAbsensi, 2),
-                'total_potongan'      => round($totalPotongan, 2),
-                'gaji_bersih'         => round($gajiBersih, 2),
-                'foto_bukti_transfer' => null,
-                'tanggal_dibayar'     => $now,
-                'status_bayar'        => 'Lunas',
-                'created_at'          => $now,
-                'updated_at'          => $now,
-            ];
         }
 
-        $db->table('presensi')->insertBatch($presensiData);
-        $db->table('penggajian')->insertBatch($penggajianData);
+        // Insert in batches of 100 to optimize performance
+        foreach (array_chunk($presensiData, 100) as $chunk) {
+            $db->table('presensi')->insertBatch($chunk);
+        }
+
+        foreach (array_chunk($penggajianData, 100) as $chunk) {
+            $db->table('penggajian')->insertBatch($chunk);
+        }
     }
 }
