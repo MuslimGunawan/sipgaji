@@ -42,7 +42,7 @@
             background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%);
             color: #f8fafc;
             z-index: 1000;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 4px 0 15px rgba(0,0,0,0.05);
             overflow-y: auto;
         }
@@ -98,7 +98,16 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Sidebar Collapsed State for Desktop */
+        body.sidebar-collapsed #sidebar {
+            transform: translateX(-100%);
+        }
+
+        body.sidebar-collapsed #content {
+            margin-left: 0 !important;
         }
 
         .top-header {
@@ -329,12 +338,16 @@
     <div id="content">
         <!-- Header -->
         <header class="top-header">
-            <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center gap-2">
+                <!-- Desktop Sidebar Toggle Button -->
+                <button id="btnToggleSidebar" class="btn btn-light rounded-circle border shadow-sm p-2 d-none d-lg-flex align-items-center justify-content-center" type="button" style="width: 38px; height: 38px;" title="Sembunyikan / Tampilkan Sidebar">
+                    <i class="fa-solid fa-indent fs-5 text-secondary" id="toggleIcon"></i>
+                </button>
                 <!-- Mobile Toggle Button -->
                 <button class="btn btn-light d-lg-none rounded-circle border shadow-sm p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
                     <i class="fa-solid fa-bars fs-5"></i>
                 </button>
-                <h5 class="fw-bold mb-0 text-dark"><?= esc($title ?? 'Dashboard') ?></h5>
+                <h5 class="fw-bold mb-0 text-dark ms-1"><?= esc($title ?? 'Dashboard') ?></h5>
             </div>
             <div class="d-flex align-items-center gap-3">
                 <button type="button" class="btn btn-sm btn-light rounded-pill border px-3 d-none d-sm-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalTimInfo">
@@ -457,5 +470,40 @@
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Sidebar Toggle Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('btnToggleSidebar');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            // Restore sidebar state from localStorage
+            if (localStorage.getItem('sipgaji_sidebar_collapsed') === 'true') {
+                document.body.classList.add('sidebar-collapsed');
+                if (toggleIcon) {
+                    toggleIcon.classList.remove('fa-indent');
+                    toggleIcon.classList.add('fa-outdent');
+                }
+            }
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    document.body.classList.toggle('sidebar-collapsed');
+                    const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+                    localStorage.setItem('sipgaji_sidebar_collapsed', isCollapsed);
+
+                    if (toggleIcon) {
+                        if (isCollapsed) {
+                            toggleIcon.classList.remove('fa-indent');
+                            toggleIcon.classList.add('fa-outdent');
+                        } else {
+                            toggleIcon.classList.remove('fa-outdent');
+                            toggleIcon.classList.add('fa-indent');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
