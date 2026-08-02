@@ -18,6 +18,10 @@ class Auth extends BaseController
 
     public function processLogin()
     {
+        if (strtolower($this->request->getMethod()) !== 'post') {
+            return redirect()->to('/login');
+        }
+
         $session = session();
         $userModel = new UserModel();
 

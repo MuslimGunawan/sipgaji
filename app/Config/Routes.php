@@ -11,7 +11,7 @@ $routes->get('/', function () {
 
 // Authentication Routes
 $routes->get('login', 'Auth::index');
-$routes->post('login/process', 'Auth::processLogin');
+$routes->match(['get', 'post'], 'login/process', 'Auth::processLogin');
 $routes->get('logout', 'Auth::logout');
 
 // Authenticated Routes

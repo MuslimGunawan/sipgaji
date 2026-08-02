@@ -52,8 +52,9 @@ exit(Boot::bootWeb($paths));
     with open(os.path.join(DEPLOY_BUILD_DIR, 'index.php'), 'w') as f:
         f.write(index_php_content)
 
-    # Root .htaccess
+    # Root .htaccess with InfinityFree compatible URL rewriting
     htaccess_content = """<IfModule mod_rewrite.c>
+    Options -Indexes
     RewriteEngine On
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
@@ -69,6 +70,7 @@ CI_ENVIRONMENT = production
 
 app.baseURL = 'http://sipgaji.fwh.is/'
 app.forceGlobalSecureRequests = false
+app.indexPage = ''
 
 database.default.hostname = sql211.infinityfree.com
 database.default.database = if0_42559479_sipgaji
