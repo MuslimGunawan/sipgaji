@@ -27,7 +27,7 @@
                 <hr class="my-3">
                 <div class="text-start text-muted" style="font-size: 0.85rem;">
                     <div class="mb-2"><i class="fa-solid fa-id-card me-2 text-primary"></i> <strong>NIP:</strong> <?= esc($karyawan['nip']) ?></div>
-                    <div class="mb-2"><i class="fa-solid fa-briefcase me-2 text-primary"></i> <strong>Jabatan:</strong> <?= esc($karyawan['nama_jabatan']) ?></div>
+                    <div class="mb-2"><i class="fa-solid fa-briefcase me-2 text-primary"></i> <strong>Jabatan:</strong> <?= esc($karyawan['nama_jabatan'] ?? '-') ?></div>
                     <div class="mb-2"><i class="fa-solid fa-ring me-2 text-primary"></i> <strong>Status Nikah:</strong> <?= esc($karyawan['status_nikah']) ?> (Anak: <?= esc($karyawan['jumlah_anak']) ?>)</div>
                     <div class="alert alert-warning py-2 mb-0 mt-3" style="font-size: 0.78rem;">
                         <i class="fa-solid fa-circle-info me-1"></i> Data kepegawaian (NIP, Jabatan, Gaji Pokok, Status) dikelola penuh oleh Administrator.

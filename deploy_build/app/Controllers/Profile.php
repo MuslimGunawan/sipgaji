@@ -22,7 +22,7 @@ class Profile extends BaseController
         $role   = session()->get('role');
 
         $user = $this->userModel->find($userId);
-        $karyawan = $this->karyawanModel->where('user_id', $userId)->first();
+        $karyawan = $this->karyawanModel->getKaryawanByUserId($userId);
 
         $data = [
             'title'    => 'Edit Profil Saya',
