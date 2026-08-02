@@ -5,6 +5,8 @@
 > **Kelompok:** **TIM - B**  
 > **Dosen Pengampu:** Rizki Suwanda, S.T., M.Kom  
 > **Program Studi:** Teknik Informatika, Fakultas Teknik, Universitas Malikussaleh  
+> **Live Demo Hosting:** [http://sipgaji.fwh.is/](http://sipgaji.fwh.is/)  
+> **Repository GitHub:** [https://github.com/MuslimGunawan/sipgaji.git](https://github.com/MuslimGunawan/sipgaji.git)  
 
 ---
 
@@ -20,7 +22,8 @@
 ---
 
 ## 📌 1. Deskripsi & Gambaran Umum Proyek
-**SIPGAJI** (Sistem Informasi Penggajian Karyawan) adalah aplikasi web komprehensif yang dibangun menggunakan framework **CodeIgniter 4 (PHP 8.5+)** dan basis data **MySQL**. Aplikasi ini dirancang untuk mengotomatiskan seluruh alur operasional penggajian karyawan di perusahaan/instansi secara presisi, akurat, dan aman.
+**SIPGAJI** (Sistem Informasi Penggajian Karyawan) adalah aplikasi web komprehensif yang dibangun menggunakan framework **CodeIgniter 4 (PHP 8.5+)** dan basis data **MySQL**.> **Live Demo Hosting:** [http://sipgaji.fwh.is/](http://sipgaji.fwh.is/)  
+> **Repository GitHub:** [https://github.com/MuslimGunawan/sipgaji.git](https://github.com/MuslimGunawan/sipgaji.git)  karyawan di perusahaan/instansi secara presisi, akurat, dan aman.
 
 Sistem tidak hanya menjalankan fungsi manajemen data (CRUD dasar), melainkan secara aktif menerapkan **logika algoritmik dan metode matematis formal** untuk kalkulasi komponen tunjangan, insentif lembur, potongan BPJS Kesehatan (1%), BPJS Ketenagakerjaan (2%), Pajak Penghasilan (PPh 21 5%), dan sanksi ketidakhadiran (alpa) hingga menghasilkan **Gaji Bersih (Take Home Pay)**.
 

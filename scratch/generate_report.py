@@ -481,7 +481,9 @@ $gajiBersih    = $totalPendapatan - $totalPotongan;"""
     story.append(Paragraph("1. Import file database <code>sipgaji.sql</code> ke dalam MySQL melalui phpMyAdmin / Command Line.", bullet_style))
     story.append(Paragraph("2. Pastikan file <code>.env</code> sudah terkonfigurasi dengan nama database <code>sipgaji</code> dan username <code>root</code>.", bullet_style))
     story.append(Paragraph("3. Jalankan perintah <code>php spark serve</code> pada terminal root proyek.", bullet_style))
-    story.append(Paragraph("4. Buka peramban (browser) dan akses URL <code>http://localhost:8080</code>.", bullet_style))
+    story.append(Paragraph("4. Akses URL aplikasi di peramban (browser):<br/>"
+                           "   • <b>Versi Localhost:</b> <code>http://localhost:8080</code><br/>"
+                           "   • <b>Versi Online Hosting Live:</b> <code>http://sipgaji.fwh.is/</code>", bullet_style))
     
     story.append(Paragraph("<b>Daftar Kredensial Login Default:</b>", body_style))
     story.append(Paragraph("• <b>Akun Administrator:</b> Username: <code>admin</code> | Password: <code>password123</code>", bullet_style))
