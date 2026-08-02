@@ -31,7 +31,7 @@ class Session extends BaseConfig
      *
      * The session cookie name, must contain only [0-9a-z_-] characters
      */
-    public string $cookieName = 'ci_session';
+    public string $cookieName = 'sipgaji_session';
 
     /**
      * --------------------------------------------------------------------------
@@ -41,7 +41,7 @@ class Session extends BaseConfig
      * The number of SECONDS you want the session to last.
      * Setting to 0 (zero) means expire when the browser is closed.
      */
-    public int $expiration = 7200;
+    public int $expiration = 86400;
 
     /**
      * --------------------------------------------------------------------------
@@ -79,7 +79,7 @@ class Session extends BaseConfig
      *
      * How many seconds between CI regenerating the session ID.
      */
-    public int $timeToUpdate = 300;
+    public int $timeToUpdate = 7200;
 
     /**
      * --------------------------------------------------------------------------

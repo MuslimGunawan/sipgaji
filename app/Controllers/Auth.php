@@ -70,6 +70,9 @@ class Auth extends BaseController
                 ];
 
                 $session->set($sessionData);
+                if (function_exists('session_write_close')) {
+                    session_write_close();
+                }
                 return redirect()->to('/dashboard')->with('success', 'Selamat datang kembali, ' . esc($namaLengkap) . '!');
             } else {
                 return redirect()->back()->withInput()->with('error', 'Password yang Anda masukkan salah.');
