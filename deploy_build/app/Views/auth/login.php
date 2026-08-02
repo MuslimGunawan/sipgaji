@@ -94,7 +94,7 @@
             </div>
         <?php endif; ?>
 
-        <form action="<?= base_url('login/process') ?>" method="POST">
+        <form action="<?= site_url('login/process') ?>" method="POST">
             <?= csrf_field() ?>
 
             <div class="mb-3">

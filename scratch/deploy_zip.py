@@ -64,11 +64,10 @@ exit(Boot::bootWeb($paths));
     with open(os.path.join(DEPLOY_BUILD_DIR, '.htaccess'), 'w') as f:
         f.write(htaccess_content)
 
-    # Production .env
+    # Production .env (omitting hardcoded baseURL so App::__construct dynamically detects http vs https)
     env_content = """# Production Environment Config for InfinityFree
 CI_ENVIRONMENT = production
 
-app.baseURL = 'http://sipgaji.fwh.is/'
 app.forceGlobalSecureRequests = false
 app.indexPage = ''
 
