@@ -19,6 +19,37 @@ class Karyawan extends BaseController
         $this->userModel     = new UserModel();
     }
 
+    private function saveUploadedPhoto($fotoFile, $oldFoto = null)
+    {
+        if (! $fotoFile || ! $fotoFile->isValid() || $fotoFile->hasMoved()) {
+            return $oldFoto ?: 'default.png';
+        }
+
+        $namaFoto = $fotoFile->getRandomName();
+
+        // 1. Save to FCPATH uploads/karyawan
+        $fcDir = FCPATH . 'uploads/karyawan';
+        if (! is_dir($fcDir)) {
+            @mkdir($fcDir, 0777, true);
+        }
+        $fotoFile->move($fcDir, $namaFoto);
+
+        // 2. Copy to ROOTPATH uploads/karyawan for shared hosting compatibility
+        $rootDir = ROOTPATH . 'uploads/karyawan';
+        if (! is_dir($rootDir)) {
+            @mkdir($rootDir, 0777, true);
+        }
+        @copy($fcDir . '/' . $namaFoto, $rootDir . '/' . $namaFoto);
+
+        // Delete old file if exists and not default
+        if ($oldFoto && $oldFoto !== 'default.png') {
+            @unlink($fcDir . '/' . $oldFoto);
+            @unlink($rootDir . '/' . $oldFoto);
+        }
+
+        return $namaFoto;
+    }
+
     public function index()
     {
         $keyword = $this->request->getGet('search');
@@ -77,14 +108,9 @@ class Karyawan extends BaseController
             'role'     => 'karyawan',
         ]);
 
-        // 2. Handle File Upload (Optional)
-        $namaFoto = 'default.png';
+        // 2. Handle File Upload
         $fotoFile = $this->request->getFile('foto');
-
-        if ($fotoFile && $fotoFile->isValid() && ! $fotoFile->hasMoved()) {
-            $namaFoto = $fotoFile->getRandomName();
-            $fotoFile->move(FCPATH . 'uploads/karyawan', $namaFoto);
-        }
+        $namaFoto = $this->saveUploadedPhoto($fotoFile, 'default.png');
 
         // 3. Create Karyawan Data
         $this->karyawanModel->insert([
@@ -128,17 +154,9 @@ class Karyawan extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $namaFoto = $karyawan['foto'];
+        $oldFoto  = $karyawan['foto'];
         $fotoFile = $this->request->getFile('foto');
-
-        if ($fotoFile && $fotoFile->isValid() && ! $fotoFile->hasMoved()) {
-            $namaFoto = $fotoFile->getRandomName();
-            $fotoFile->move(FCPATH . 'uploads/karyawan', $namaFoto);
-
-            if ($karyawan['foto'] && $karyawan['foto'] !== 'default.png' && file_exists(FCPATH . 'uploads/karyawan/' . $karyawan['foto'])) {
-                @unlink(FCPATH . 'uploads/karyawan/' . $karyawan['foto']);
-            }
-        }
+        $namaFoto = $this->saveUploadedPhoto($fotoFile, $oldFoto);
 
         $this->karyawanModel->update($id, [
             'nip'           => $this->request->getPost('nip'),
@@ -155,6 +173,15 @@ class Karyawan extends BaseController
             'jumlah_anak'   => $this->request->getPost('jumlah_anak'),
         ]);
 
+        // If the updated Karyawan belongs to currently logged in session user, update session foto & name
+        if (session()->get('userId') == $karyawan['user_id']) {
+            session()->set('foto', $namaFoto);
+            session()->set('namaLengkap', $this->request->getPost('nama'));
+            if (function_exists('session_write_close')) {
+                session_write_close();
+            }
+        }
+
         return redirect()->to('/karyawan')->with('success', 'Data Karyawan berhasil diperbarui.');
     }
 
@@ -169,8 +196,9 @@ class Karyawan extends BaseController
             $this->userModel->delete($karyawan['user_id']);
         }
 
-        if ($karyawan['foto'] && $karyawan['foto'] !== 'default.png' && file_exists(FCPATH . 'uploads/karyawan/' . $karyawan['foto'])) {
+        if ($karyawan['foto'] && $karyawan['foto'] !== 'default.png') {
             @unlink(FCPATH . 'uploads/karyawan/' . $karyawan['foto']);
+            @unlink(ROOTPATH . 'uploads/karyawan/' . $karyawan['foto']);
         }
 
         $this->karyawanModel->delete($id);

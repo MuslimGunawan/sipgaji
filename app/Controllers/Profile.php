@@ -22,11 +22,7 @@ class Profile extends BaseController
         $role   = session()->get('role');
 
         $user = $this->userModel->find($userId);
-        $karyawan = null;
-
-        if ($role === 'karyawan') {
-            $karyawan = $this->karyawanModel->getKaryawanByUserId($userId);
-        }
+        $karyawan = $this->karyawanModel->where('user_id', $userId)->first();
 
         $data = [
             'title'    => 'Edit Profil Saya',
@@ -52,31 +48,45 @@ class Profile extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        if ($role === 'karyawan') {
-            $karyawan = $this->karyawanModel->where('user_id', $userId)->first();
-            if ($karyawan) {
-                $namaFoto = $karyawan['foto'];
-                $fotoFile = $this->request->getFile('foto');
+        $karyawan = $this->karyawanModel->where('user_id', $userId)->first();
+        $oldFoto  = $karyawan ? $karyawan['foto'] : (session()->get('foto') ?: 'default.png');
+        $namaFoto = $oldFoto;
 
-                if ($fotoFile && $fotoFile->isValid() && ! $fotoFile->hasMoved()) {
-                    $namaFoto = $fotoFile->getRandomName();
-                    $fotoFile->move(FCPATH . 'uploads/karyawan', $namaFoto);
+        $fotoFile = $this->request->getFile('foto');
+        if ($fotoFile && $fotoFile->isValid() && ! $fotoFile->hasMoved()) {
+            $namaFoto = $fotoFile->getRandomName();
 
-                    if ($karyawan['foto'] && $karyawan['foto'] !== 'default.png' && file_exists(FCPATH . 'uploads/karyawan/' . $karyawan['foto'])) {
-                        @unlink(FCPATH . 'uploads/karyawan/' . $karyawan['foto']);
-                    }
-                }
+            // 1. Save to FCPATH uploads/karyawan
+            $fcDir = FCPATH . 'uploads/karyawan';
+            if (! is_dir($fcDir)) {
+                @mkdir($fcDir, 0777, true);
+            }
+            $fotoFile->move($fcDir, $namaFoto);
 
-                $this->karyawanModel->update($karyawan['id'], [
-                    'no_telp' => $this->request->getPost('no_telp'),
-                    'alamat'  => $this->request->getPost('alamat'),
-                    'foto'    => $namaFoto,
-                ]);
+            // 2. Copy to ROOTPATH uploads/karyawan for InfinityFree shared hosting
+            $rootDir = ROOTPATH . 'uploads/karyawan';
+            if (! is_dir($rootDir)) {
+                @mkdir($rootDir, 0777, true);
+            }
+            @copy($fcDir . '/' . $namaFoto, $rootDir . '/' . $namaFoto);
 
-                // Update session
-                session()->set('foto', $namaFoto);
+            // Delete old photo if not default
+            if ($oldFoto && $oldFoto !== 'default.png') {
+                @unlink($fcDir . '/' . $oldFoto);
+                @unlink($rootDir . '/' . $oldFoto);
             }
         }
+
+        if ($karyawan) {
+            $this->karyawanModel->update($karyawan['id'], [
+                'no_telp' => $this->request->getPost('no_telp') ?: $karyawan['no_telp'],
+                'alamat'  => $this->request->getPost('alamat') ?: $karyawan['alamat'],
+                'foto'    => $namaFoto,
+            ]);
+        }
+
+        // Always update session foto
+        session()->set('foto', $namaFoto);
 
         // Handle Password Change
         $oldPassword     = $this->request->getPost('old_password');
@@ -100,6 +110,10 @@ class Profile extends BaseController
             $this->userModel->update($userId, [
                 'password' => password_hash($newPassword, PASSWORD_DEFAULT),
             ]);
+        }
+
+        if (function_exists('session_write_close')) {
+            session_write_close();
         }
 
         return redirect()->to('/profile')->with('success', 'Profil dan kredensial Anda berhasil diperbarui.');

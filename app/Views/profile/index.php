@@ -9,8 +9,9 @@
             <div class="mb-3">
                 <?php 
                     $profileFoto = ($karyawan && !empty($karyawan['foto'])) ? $karyawan['foto'] : (session()->get('foto') ?: 'default.png');
-                    $profileFotoPath = FCPATH . 'uploads/karyawan/' . $profileFoto;
-                    if ($profileFoto !== 'default.png' && !file_exists($profileFotoPath)) {
+                    $profileFotoPathFC = FCPATH . 'uploads/karyawan/' . $profileFoto;
+                    $profileFotoPathRoot = ROOTPATH . 'uploads/karyawan/' . $profileFoto;
+                    if ($profileFoto !== 'default.png' && !file_exists($profileFotoPathFC) && !file_exists($profileFotoPathRoot)) {
                         $profileFoto = 'default.png';
                     }
                 ?>

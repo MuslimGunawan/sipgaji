@@ -431,10 +431,12 @@
                 </div>
                 <a href="<?= base_url('profile') ?>" class="text-decoration-none">
                     <?php 
-                        $userFoto = session()->get('foto');
-                        $fotoPath = FCPATH . 'uploads/karyawan/' . $userFoto;
-                        if ($userFoto && $userFoto !== 'default.png' && file_exists($fotoPath)): 
+                        $userFoto = session()->get('foto') ?: 'default.png';
+                        $fotoPathFC = FCPATH . 'uploads/karyawan/' . $userFoto;
+                        $fotoPathRoot = ROOTPATH . 'uploads/karyawan/' . $userFoto;
+                        $hasFoto = ($userFoto !== 'default.png' && (file_exists($fotoPathFC) || file_exists($fotoPathRoot)));
                     ?>
+                    <?php if ($hasFoto): ?>
                         <img src="<?= base_url('uploads/karyawan/' . $userFoto) ?>" class="rounded-circle border border-2 border-primary shadow-sm" style="width: 42px; height: 42px; object-fit: cover;" alt="Avatar">
                     <?php else: ?>
                         <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 42px; height: 42px;">

@@ -30,6 +30,12 @@ def prepare_build():
         if os.path.exists(src):
             shutil.copytree(src, dst, ignore=shutil.ignore_patterns('.git', '.github', 'node_modules', '*.log'))
 
+    # Ensure uploads exists in root deploy_build as well for shared hosting compatibility
+    public_uploads = os.path.join(DEPLOY_BUILD_DIR, 'public', 'uploads')
+    root_uploads = os.path.join(DEPLOY_BUILD_DIR, 'uploads')
+    if os.path.exists(public_uploads):
+        shutil.copytree(public_uploads, root_uploads, dirs_exist_ok=True)
+
     # Root index.php with CI4 v4.7 Boot::bootWeb
     index_php_content = """<?php
 // CodeIgniter 4.7 InfinityFree Production Entry Point
@@ -52,10 +58,14 @@ exit(Boot::bootWeb($paths));
     with open(os.path.join(DEPLOY_BUILD_DIR, 'index.php'), 'w') as f:
         f.write(index_php_content)
 
-    # Root .htaccess with InfinityFree compatible URL rewriting
+    # Root .htaccess with InfinityFree compatible URL rewriting & asset mapping
     htaccess_content = """<IfModule mod_rewrite.c>
     Options -Indexes
     RewriteEngine On
+
+    # Map uploads folder directly
+    RewriteRule ^uploads/(.*)$ public/uploads/$1 [L]
+
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ index.php/$1 [L,QSA]
@@ -64,7 +74,7 @@ exit(Boot::bootWeb($paths));
     with open(os.path.join(DEPLOY_BUILD_DIR, '.htaccess'), 'w') as f:
         f.write(htaccess_content)
 
-    # Production .env (omitting hardcoded baseURL so App::__construct dynamically detects http vs https)
+    # Production .env
     env_content = """# Production Environment Config for InfinityFree
 CI_ENVIRONMENT = production
 
