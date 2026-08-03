@@ -3,14 +3,16 @@
 <?= $this->section('content') ?>
 
 <div class="card card-custom p-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
         <div>
             <h5 class="fw-bold mb-1">Data Jabatan & Skema Gaji</h5>
             <p class="text-muted mb-0" style="font-size: 0.85rem;">Manajemen gaji pokok dan tunjangan dasar per jabatan</p>
         </div>
-        <button class="btn btn-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#modalAddJabatan">
-            <i class="fa-solid fa-plus me-1"></i> Tambah Jabatan
-        </button>
+        <div class="d-flex flex-column flex-sm-row header-action-group gap-2">
+            <button class="btn btn-primary rounded-pill px-4 text-nowrap" data-bs-toggle="modal" data-bs-target="#modalAddJabatan">
+                <i class="fa-solid fa-plus me-1"></i> Tambah Jabatan
+            </button>
+        </div>
     </div>
 
     <div class="table-responsive">

@@ -8,7 +8,7 @@
             <h5 class="fw-bold mb-1">Rekapitulasi Presensi & Kehadiran</h5>
             <p class="text-muted mb-0" style="font-size: 0.85rem;">Input dan kelola data hari kerja, sakit, izin, alpa, serta jam lembur</p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-column flex-sm-row header-action-group gap-2">
             <!-- Filter Form -->
             <form action="<?= base_url('presensi') ?>" method="GET" class="d-flex gap-2">
                 <select name="bulan" class="form-select rounded-pill">

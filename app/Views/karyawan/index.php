@@ -8,10 +8,10 @@
             <h5 class="fw-bold mb-1">Data Karyawan</h5>
             <p class="text-muted mb-0" style="font-size: 0.85rem;">Pengelolaan data profil karyawan dan akun pengguna sistem</p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-column flex-sm-row header-action-group gap-2">
             <!-- Search Form -->
-            <form action="<?= base_url('karyawan') ?>" method="GET" class="d-flex gap-2">
-                <div class="input-group">
+            <form action="<?= base_url('karyawan') ?>" method="GET" class="d-flex gap-2 w-100">
+                <div class="input-group w-100">
                     <input type="text" name="search" class="form-control rounded-start-pill border-end-0" placeholder="Cari nama/NIP..." value="<?= esc($search ?? '') ?>">
                     <button class="btn btn-outline-secondary rounded-end-pill border-start-0" type="submit">
                         <i class="fa-solid fa-magnifying-glass"></i>

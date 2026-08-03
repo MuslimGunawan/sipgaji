@@ -207,6 +207,50 @@
             }
         }
 
+        /* Responsive Mobile Table & Action Controls */
+        .table-responsive .table {
+            white-space: nowrap;
+        }
+        .table-responsive {
+            -webkit-overflow-scrolling: touch;
+            border-radius: 12px;
+        }
+        .table-responsive::-webkit-scrollbar {
+            height: 6px;
+        }
+        .table-responsive::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        @media (max-width: 575.98px) {
+            .main-container {
+                padding: 0.75rem !important;
+            }
+            .card-custom {
+                padding: 1rem !important;
+                border-radius: 14px;
+            }
+            .header-action-group {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                width: 100%;
+            }
+            .header-action-group form,
+            .header-action-group .btn,
+            .header-action-group .input-group,
+            .header-action-group select {
+                width: 100% !important;
+            }
+        }
+
         /* Mobile Offcanvas Sidebar */
         .offcanvas-sidebar {
             background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%);

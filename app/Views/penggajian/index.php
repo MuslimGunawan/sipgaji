@@ -8,7 +8,7 @@
             <h5 class="fw-bold mb-1">Perhitungan Gaji Otomatis & Rekapitulasi</h5>
             <p class="text-muted mb-0" style="font-size: 0.85rem;">Kalkulasi gaji berbasis algoritma matematika (Tunjangan, Lembur, BPJS, PPh 21, & Potongan Alpa)</p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-column flex-sm-row header-action-group gap-2">
             <!-- Filter Form -->
             <form action="<?= base_url('penggajian') ?>" method="GET" class="d-flex gap-2">
                 <select name="bulan" class="form-select rounded-pill">
@@ -34,7 +34,7 @@
                     <?= csrf_field() ?>
                     <input type="hidden" name="bulan" value="<?= $bulan ?>">
                     <input type="hidden" name="tahun" value="<?= $tahun ?>">
-                    <button type="submit" class="btn btn-success rounded-pill px-4 text-nowrap">
+                    <button type="submit" class="btn btn-success rounded-pill px-4 text-nowrap w-100">
                         <i class="fa-solid fa-calculator me-1"></i> Hitung Gaji Otomatis
                     </button>
                 </form>
