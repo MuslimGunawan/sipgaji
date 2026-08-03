@@ -21,22 +21,24 @@ class Penggajian extends BaseController
 
     public function index()
     {
-        $bulan = (int)($this->request->getGet('bulan') ?: 7);
-        $tahun = (int)($this->request->getGet('tahun') ?: 2026);
+        $bulan  = (int)($this->request->getGet('bulan') ?: 7);
+        $tahun  = (int)($this->request->getGet('tahun') ?: 2026);
+        $search = $this->request->getGet('search');
 
         $role = session()->get('role');
         $karyawanId = session()->get('karyawanId');
 
         if ($role === 'karyawan') {
-            $penggajianList = $this->penggajianModel->getPenggajianFull($bulan, $tahun, $karyawanId);
+            $penggajianList = $this->penggajianModel->getPenggajianFull($bulan, $tahun, $karyawanId, null, $search);
         } else {
-            $penggajianList = $this->penggajianModel->getPenggajianFull($bulan, $tahun);
+            $penggajianList = $this->penggajianModel->getPenggajianFull($bulan, $tahun, null, null, $search);
         }
 
         $data = [
             'title'          => 'Kalkulasi & Daftar Penggajian',
             'bulan'          => $bulan,
             'tahun'          => $tahun,
+            'search'         => $search,
             'penggajianList' => $penggajianList,
         ];
 

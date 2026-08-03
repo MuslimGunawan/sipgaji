@@ -3,43 +3,42 @@
 namespace App\Controllers;
 
 use App\Models\PenggajianModel;
-use App\Models\KaryawanModel;
 use App\Models\PresensiModel;
-use App\Models\JabatanModel;
+use App\Models\KaryawanModel;
 
 class Penggajian extends BaseController
 {
     protected $penggajianModel;
-    protected $karyawanModel;
     protected $presensiModel;
-    protected $jabatanModel;
+    protected $karyawanModel;
 
     public function __construct()
     {
         $this->penggajianModel = new PenggajianModel();
-        $this->karyawanModel   = new KaryawanModel();
         $this->presensiModel   = new PresensiModel();
-        $this->jabatanModel    = new JabatanModel();
+        $this->karyawanModel   = new KaryawanModel();
     }
 
     public function index()
     {
-        $bulan = (int)($this->request->getGet('bulan') ?: 7);
-        $tahun = (int)($this->request->getGet('tahun') ?: 2026);
+        $bulan  = (int)($this->request->getGet('bulan') ?: 7);
+        $tahun  = (int)($this->request->getGet('tahun') ?: 2026);
+        $search = $this->request->getGet('search');
 
         $role = session()->get('role');
         $karyawanId = session()->get('karyawanId');
 
         if ($role === 'karyawan') {
-            $penggajianList = $this->penggajianModel->getPenggajianFull($bulan, $tahun, $karyawanId);
+            $penggajianList = $this->penggajianModel->getPenggajianFull($bulan, $tahun, $karyawanId, null, $search);
         } else {
-            $penggajianList = $this->penggajianModel->getPenggajianFull($bulan, $tahun);
+            $penggajianList = $this->penggajianModel->getPenggajianFull($bulan, $tahun, null, null, $search);
         }
 
         $data = [
             'title'          => 'Kalkulasi & Daftar Penggajian',
             'bulan'          => $bulan,
             'tahun'          => $tahun,
+            'search'         => $search,
             'penggajianList' => $penggajianList,
         ];
 
@@ -48,88 +47,74 @@ class Penggajian extends BaseController
 
     public function hitungOtomatis()
     {
-        if (session()->get('role') !== 'admin') {
-            return redirect()->to('/dashboard');
+        $bulan = (int)($this->request->getPost('bulan') ?: 7);
+        $tahun = (int)($this->request->getPost('tahun') ?: 2026);
+
+        // Get all presensi data for this month and year
+        $presensiList = $this->presensiModel->getPresensiWithKaryawan($bulan, $tahun);
+
+        if (empty($presensiList)) {
+            return redirect()->back()->with('error', "Belum ada data presensi pada Bulan {$bulan} Tahun {$tahun}. Silakan input presensi terlebih dahulu.");
         }
 
-        $bulan = (int)$this->request->getPost('bulan');
-        $tahun = (int)$this->request->getPost('tahun');
-
-        if (! $bulan || ! $tahun) {
-            return redirect()->back()->with('error', 'Bulan dan Tahun wajib dipilih.');
-        }
-
-        $karyawanAll = $this->karyawanModel->getKaryawanWithJabatan();
         $countProcessed = 0;
 
-        foreach ($karyawanAll as $k) {
-            $karyawanId = $k['id'];
-            $gajiPokok   = (float)($k['gaji_pokok'] ?? 0);
-            $tunjJabatan = (float)($k['tunj_jabatan'] ?? 0);
-            $rateMakan   = (float)($k['tunj_makan_per_hari'] ?? 0);
-            $rateTrans   = (float)($k['tunj_transport_per_hari'] ?? 0);
-
-            // Fetch attendance data for this month & year
-            $presensi = $this->presensiModel->where('karyawan_id', $karyawanId)
-                                            ->where('bulan', $bulan)
-                                            ->where('tahun', $tahun)
-                                            ->first();
-
-            $hadir  = $presensi ? (int)$presensi['jumlah_hadir'] : 0;
-            $sakit  = $presensi ? (int)$presensi['jumlah_sakit'] : 0;
-            $izin   = $presensi ? (int)$presensi['jumlah_izin'] : 0;
-            $alpa   = $presensi ? (int)$presensi['jumlah_alpa'] : 0;
-            $lembur = $presensi ? (int)$presensi['jumlah_lembur_jam'] : 0;
-
-            // 1. Tunjangan Kehadiran = (Hadir * Tunj. Makan/Hari) + (Hadir * Tunj. Transport/Hari)
-            $tunjKehadiran = ($hadir * $rateMakan) + ($hadir * $rateTrans);
-
-            // 2. Tunjangan Keluarga = Jika Menikah (10% Gaji Pokok) + (2% Gaji Pokok per anak, max 3 anak)
-            $tunjKeluarga = 0;
-            if (isset($k['status_nikah']) && $k['status_nikah'] === 'Menikah') {
-                $tunjKeluarga += 0.10 * $gajiPokok;
-                $jumlahAnak = min((int)($k['jumlah_anak'] ?? 0), 3);
-                $tunjKeluarga += ($jumlahAnak * 0.02 * $gajiPokok);
+        foreach ($presensiList as $p) {
+            $karyawan = $this->karyawanModel->getKaryawanWithJabatan($p['karyawan_id']);
+            if (! $karyawan) {
+                continue;
             }
 
-            // 3. Bonus Lembur = Lembur jam * (1/173 * Gaji Pokok)
-            $rateLemburJam = (1 / 173) * $gajiPokok;
-            $bonusLembur   = $lembur * $rateLemburJam;
+            $gajiPokok   = (float)$karyawan['gaji_pokok'];
+            $tunjJabatan = (float)$karyawan['tunj_jabatan'];
 
-            // Total Pendapatan Kotor (Gross Income)
+            // Tunjangan Kehadiran = (Hadir * Makan/Hari) + (Hadir * Transport/Hari)
+            $hadir = (int)$p['jumlah_hadir'];
+            $tunjKehadiran = ($hadir * (float)$karyawan['tunj_makan_per_hari']) + ($hadir * (float)$karyawan['tunj_transport_per_hari']);
+
+            // Tunjangan Keluarga = (10% jika Menikah) + (5% per Anak, Max 2)
+            $tunjKeluarga = 0.00;
+            if ($karyawan['status_nikah'] === 'Menikah') {
+                $tunjKeluarga += 0.10 * $gajiPokok;
+                $anakCount = min(2, (int)$karyawan['jumlah_anak']);
+                $tunjKeluarga += (0.05 * $gajiPokok * $anakCount);
+            }
+
+            // Bonus Lembur = Jam Lembur * (1.5 * Gaji Pokok / 173)
+            $lembur = (int)$p['jumlah_lembur_jam'];
+            $bonusLembur = $lembur * (1.5 * ($gajiPokok / 173.0));
+
+            // Total Pendapatan
             $totalPendapatan = $gajiPokok + $tunjJabatan + $tunjKehadiran + $tunjKeluarga + $bonusLembur;
 
-            // Potongan mandatory
-            // Potongan BPJS Kesehatan = 1% dari Total Pendapatan
-            $potBpjsKs = 0.01 * $totalPendapatan;
+            // Potongan BPJS Kesehatan (1%) & Ketenagakerjaan (2%)
+            $potBpjsKs = 0.01 * $gajiPokok;
+            $potBpjsTk = 0.02 * $gajiPokok;
 
-            // Potongan BPJS Ketenagakerjaan = 2% dari Total Pendapatan
-            $potBpjsTk = 0.02 * $totalPendapatan;
+            // Potongan PPh 21 (5% Progresif Gaji Pokok)
+            $potPph21 = 0.05 * $gajiPokok;
 
-            // Potongan PPh 21 Estimasi Flat 5% (jika Gross > 5 Juta)
-            $potPph21 = 0;
-            if ($totalPendapatan > 5000000) {
-                $potPph21 = 0.05 * ($totalPendapatan - 5000000);
-            }
+            // Potongan Absensi = Alpa * (Gaji Pokok / 22)
+            $alpa = (int)$p['jumlah_alpa'];
+            $potAbsensi = $alpa * ($gajiPokok / 22.0);
 
-            // Potongan Absensi Alpa = Alpa * (1/26 * Gaji Pokok)
-            $potAbsensi = $alpa * ((1 / 26) * $gajiPokok);
-
+            // Total Potongan
             $totalPotongan = $potBpjsKs + $potBpjsTk + $potPph21 + $potAbsensi;
-            $gajiBersih    = max(0, $totalPendapatan - $totalPotongan);
 
-            // Generate Kode Transaksi TRX-PAY-YYYYMM-XXX
-            $kodeTransaksi = 'TRX-PAY-' . sprintf('%04d%02d', $tahun, $bulan) . '-' . sprintf('%03d', $karyawanId);
+            // Gaji Bersih
+            $gajiBersih = $totalPendapatan - $totalPotongan;
 
-            // Check existing payroll record
-            $existing = $this->penggajianModel->where('karyawan_id', $karyawanId)
-                                               ->where('bulan', $bulan)
-                                               ->where('tahun', $tahun)
-                                               ->first();
+            $kodeTrx = 'TRX-PAY-' . $tahun . str_pad($bulan, 2, '0', STR_PAD_LEFT) . '-' . str_pad($karyawan['id'], 3, '0', STR_PAD_LEFT);
+
+            // Check if record exists
+            $existing = $this->penggajianModel->where('karyawan_id', $karyawan['id'])
+                                              ->where('bulan', $bulan)
+                                              ->where('tahun', $tahun)
+                                              ->first();
 
             $payrollData = [
-                'kode_transaksi'   => $kodeTransaksi,
-                'karyawan_id'      => $karyawanId,
+                'kode_transaksi'   => $kodeTrx,
+                'karyawan_id'      => $karyawan['id'],
                 'bulan'            => $bulan,
                 'tahun'            => $tahun,
                 'gaji_pokok'       => round($gajiPokok, 2),

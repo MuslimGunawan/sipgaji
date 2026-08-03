@@ -40,7 +40,7 @@ class PenggajianModel extends Model
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
 
-    public function getPenggajianFull($bulan = null, $tahun = null, $karyawanId = null, $id = null)
+    public function getPenggajianFull($bulan = null, $tahun = null, $karyawanId = null, $id = null, $search = null)
     {
         $builder = $this->db->table('penggajian g')
             ->select('g.*, k.nip, k.nama, k.status_nikah, k.jumlah_anak, k.alamat, k.no_telp, j.nama_jabatan, u.email')
@@ -59,6 +59,14 @@ class PenggajianModel extends Model
         }
         if ($karyawanId !== null) {
             $builder->where('g.karyawan_id', $karyawanId);
+        }
+        if (!empty($search)) {
+            $builder->groupStart()
+                ->like('k.nama', $search)
+                ->orLike('k.nip', $search)
+                ->orLike('g.kode_transaksi', $search)
+                ->orLike('j.nama_jabatan', $search)
+                ->groupEnd();
         }
 
         return $builder->orderBy('g.id', 'DESC')->get()->getResultArray();

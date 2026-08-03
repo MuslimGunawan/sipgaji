@@ -8,10 +8,16 @@
             <h5 class="fw-bold mb-1">Perhitungan Gaji Otomatis & Rekapitulasi</h5>
             <p class="text-muted mb-0" style="font-size: 0.85rem;">Kalkulasi gaji berbasis algoritma matematika (Tunjangan, Lembur, BPJS, PPh 21, & Potongan Alpa)</p>
         </div>
-        <div class="d-flex gap-2">
-            <!-- Filter Form -->
-            <form action="<?= base_url('penggajian') ?>" method="GET" class="d-flex gap-2">
-                <select name="bulan" class="form-select rounded-pill">
+        <div class="d-flex flex-column flex-sm-row header-action-group gap-2">
+            <!-- Filter & Search Form -->
+            <form action="<?= base_url('penggajian') ?>" method="GET" class="d-flex flex-wrap gap-2">
+                <div class="input-group flex-nowrap" style="max-width: 200px;">
+                    <input type="text" name="search" id="quickSearchInput" class="form-control rounded-start-pill border-end-0" placeholder="Cari nama/NIP..." value="<?= esc($search ?? '') ?>">
+                    <button class="btn btn-outline-secondary rounded-end-pill border-start-0" type="submit">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+                <select name="bulan" class="form-select rounded-pill" style="width: 110px;">
                     <?php
                     $months = [
                         1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni',
@@ -22,7 +28,7 @@
                         <option value="<?= $num ?>" <?= $bulan == $num ? 'selected' : '' ?>><?= $name ?></option>
                     <?php endforeach; ?>
                 </select>
-                <select name="tahun" class="form-select rounded-pill">
+                <select name="tahun" class="form-select rounded-pill" style="width: 90px;">
                     <option value="2026" <?= $tahun == 2026 ? 'selected' : '' ?>>2026</option>
                     <option value="2025" <?= $tahun == 2025 ? 'selected' : '' ?>>2025</option>
                 </select>
@@ -30,11 +36,11 @@
             </form>
 
             <?php if (session()->get('role') === 'admin'): ?>
-                <form action="<?= base_url('penggajian/hitung') ?>" method="POST" onsubmit="return confirm('Jalankan kalkulasi gaji otomatis untuk Bulan <?= $bulan ?> Tahun <?= $tahun ?>?')">
+                <form action="<?= base_url('penggajian/hitung') ?>" method="POST" onsubmit="return confirm('Jalankan kalkulasi gaji otomatis untuk SELURUH KARYAWAN pada Bulan <?= $bulan ?> Tahun <?= $tahun ?>?')">
                     <?= csrf_field() ?>
                     <input type="hidden" name="bulan" value="<?= $bulan ?>">
                     <input type="hidden" name="tahun" value="<?= $tahun ?>">
-                    <button type="submit" class="btn btn-success rounded-pill px-4 text-nowrap">
+                    <button type="submit" class="btn btn-success rounded-pill px-4 text-nowrap w-100">
                         <i class="fa-solid fa-calculator me-1"></i> Hitung Gaji Otomatis
                     </button>
                 </form>
@@ -143,5 +149,25 @@
         </div>
     <?php endforeach; ?>
 <?php endif; ?>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById("quickSearchInput");
+    if (searchInput) {
+        searchInput.addEventListener("keyup", function() {
+            const query = this.value.toLowerCase().trim();
+            const rows = document.querySelectorAll("table tbody tr");
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                if (query === "" || text.includes(query)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        });
+    }
+});
+</script>
 
 <?= $this->endSection() ?>
