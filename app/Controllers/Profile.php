@@ -88,6 +88,11 @@ class Profile extends BaseController
         // Always update session foto
         session()->set('foto', $namaFoto);
 
+        $userSessionName = session()->get('namaLengkap') ?? session()->get('username');
+        $roleName = session()->get('role') === 'admin' ? 'Admin' : 'Karyawan';
+        
+        \App\Models\ActivityLogModel::log('EDIT_PROFIL', "{$roleName} {$userSessionName} memperbarui data profil & kontak");
+
         // Handle Password Change
         $oldPassword     = $this->request->getPost('old_password');
         $newPassword     = $this->request->getPost('new_password');
@@ -110,6 +115,8 @@ class Profile extends BaseController
             $this->userModel->update($userId, [
                 'password' => password_hash($newPassword, PASSWORD_DEFAULT),
             ]);
+
+            \App\Models\ActivityLogModel::log('UBAH_PASSWORD', "{$roleName} {$userSessionName} memperbarui password akun");
         }
 
         if (function_exists('session_write_close')) {
