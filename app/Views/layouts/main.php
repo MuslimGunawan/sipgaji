@@ -232,10 +232,10 @@
 
         @media (max-width: 575.98px) {
             .main-container {
-                padding: 0.75rem !important;
+                padding: 0.5rem !important;
             }
             .card-custom {
-                padding: 1rem !important;
+                padding: 0.85rem !important;
                 border-radius: 14px;
             }
             .header-action-group {
@@ -243,11 +243,24 @@
                 align-items: stretch !important;
                 width: 100%;
             }
-            .header-action-group form,
-            .header-action-group .btn,
-            .header-action-group .input-group,
-            .header-action-group select {
+            .header-action-group > form,
+            .header-action-group > .btn,
+            .header-action-group > select {
                 width: 100% !important;
+            }
+            .header-action-group .input-group {
+                width: 100% !important;
+                display: flex !important;
+                flex-wrap: nowrap !important;
+            }
+            .header-action-group .input-group .form-control,
+            .header-action-group .input-group .form-select {
+                flex: 1 1 auto !important;
+                width: 1% !important;
+            }
+            .header-action-group .input-group .btn {
+                width: auto !important;
+                flex: 0 0 auto !important;
             }
         }
 
