@@ -59,13 +59,10 @@
             gap: 0.5rem;
         }
 
-        /* Signature Vertical Baseline Lock */
-        .signature-col {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-height: 140px;
-            height: 100%;
+        /* Dedicated Signature Space */
+        .signature-space {
+            height: 60px;
+            width: 100%;
         }
 
         /* Mobile Responsive Layout Overhaul */
@@ -101,8 +98,8 @@
             .table-itemized td, .table-itemized th {
                 font-size: 0.8rem;
             }
-            .signature-col {
-                min-height: 155px;
+            .signature-space {
+                height: 55px;
             }
         }
 
@@ -242,7 +239,7 @@
             </div>
         </div>
 
-        <!-- Net Total Take Home Pay (Centered Symmetrical Banner) -->
+        <!-- Net Total Take Home Pay -->
         <div class="p-3 bg-success-subtle text-success rounded-3 d-flex flex-column flex-sm-row justify-content-between align-items-center text-center text-sm-start gap-2 mb-5 border border-success-subtle take-home-pay-box">
             <div>
                 <h6 class="fw-bold mb-0 text-success">GAJI BERSIH (TAKE HOME PAY)</h6>
@@ -251,30 +248,20 @@
             <h3 class="fw-extrabold mb-0 text-success text-nowrap">Rp <?= number_format($gaji['gaji_bersih'], 0, ',', '.') ?></h3>
         </div>
 
-        <!-- Signatures (Locked Baseline Alignment) -->
+        <!-- Signatures (Dedicated Signature Space) -->
         <div class="row text-center mt-4" style="font-size: 0.85rem;">
             <div class="col-6">
-                <div class="signature-col">
-                    <div>
-                        <p class="mb-0 text-muted">Penerima Gaji,</p>
-                    </div>
-                    <div>
-                        <div class="fw-bold text-dark text-decoration-underline text-break"><?= esc($gaji['nama']) ?></div>
-                        <small class="text-muted text-break">NIP: <?= esc($gaji['nip']) ?></small>
-                    </div>
-                </div>
+                <p class="mb-0 text-muted">Penerima Gaji,</p>
+                <div class="signature-space"></div>
+                <div class="fw-bold text-dark text-decoration-underline text-break"><?= esc($gaji['nama']) ?></div>
+                <small class="text-muted text-break">NIP: <?= esc($gaji['nip']) ?></small>
             </div>
             <div class="col-6">
-                <div class="signature-col">
-                    <div>
-                        <p class="mb-0 text-muted">Lhokseumawe, <?= date('d F Y', strtotime($gaji['created_at'])) ?></p>
-                        <p class="mb-0 text-muted">Manager Keuangan & HRD,</p>
-                    </div>
-                    <div>
-                        <div class="fw-bold text-dark text-decoration-underline text-break">Rizki Suwanda, S.T., M.Kom</div>
-                        <small class="text-muted text-break">NIP. 19910917 202203 1 006</small>
-                    </div>
-                </div>
+                <p class="mb-0 text-muted">Lhokseumawe, <?= date('d F Y', strtotime($gaji['created_at'])) ?></p>
+                <p class="mb-0 text-muted">Manager Keuangan & HRD,</p>
+                <div class="signature-space"></div>
+                <div class="fw-bold text-dark text-decoration-underline text-break">Rizki Suwanda, S.T., M.Kom</div>
+                <small class="text-muted text-break">NIP. 19910917 202203 1 006</small>
             </div>
         </div>
     </div>
