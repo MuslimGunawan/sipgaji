@@ -176,7 +176,8 @@ class Penggajian extends BaseController
                 'tanggal_dibayar'     => date('Y-m-d H:i:s'),
             ]);
 
-            \App\Models\ActivityLogModel::log('UPLOAD_BUKTI_GAJI', "User " . session()->get('username') . " mengunggah bukti pembayaran gaji karyawan {$gaji['nama_karyawan']} (TRX #{$gaji['kode_transaksi']})");
+            $empNama = $gaji['nama'] ?? 'Karyawan';
+            \App\Models\ActivityLogModel::log('UPLOAD_BUKTI_GAJI', "User " . session()->get('username') . " mengunggah bukti pembayaran gaji karyawan {$empNama} (TRX #{$gaji['kode_transaksi']})");
         }
 
         return redirect()->to('/penggajian')->with('success', 'Bukti transfer pembayaran gaji berhasil diunggah.');
@@ -198,7 +199,8 @@ class Penggajian extends BaseController
 
         $userSessionName = session()->get('namaLengkap') ?? session()->get('username');
         $roleName = $role === 'admin' ? 'Admin' : 'Karyawan';
-        \App\Models\ActivityLogModel::log('LIHAT_SLIP_GAJI', "{$roleName} {$userSessionName} melihat/mencetak Slip Gaji karyawan {$gaji['nama_karyawan']} (Periode Bulan {$gaji['bulan']} / {$gaji['tahun']})");
+        $namaPekerja = $gaji['nama'] ?? 'Karyawan';
+        \App\Models\ActivityLogModel::log('LIHAT_SLIP_GAJI', "{$roleName} {$userSessionName} melihat/mencetak Slip Gaji karyawan {$namaPekerja} (Periode Bulan {$gaji['bulan']} / {$gaji['tahun']})");
 
         $presensi = $this->presensiModel->where('karyawan_id', $gaji['karyawan_id'])
                                         ->where('bulan', $gaji['bulan'])
