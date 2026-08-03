@@ -8,16 +8,18 @@ from reportlab.platypus import (
 )
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_LEFT, TA_RIGHT
+from PIL import Image as PILImg
 
 OUTPUT_PDF = r"c:\laragon\www\sipgaji\Laporan_UAS_SIPGAJI.pdf"
+SCREENSHOT_DIR = r"c:\laragon\www\sipgaji\Screenshot"
 
 def create_unimal_logo():
     logo_path = r"c:\laragon\www\sipgaji\scratch\unimal_logo.png"
     if os.path.exists(logo_path):
         return logo_path
 
-    from PIL import Image as PILImage, ImageDraw, ImageFont
-    img = PILImage.new("RGBA", (400, 400), (255, 255, 255, 0))
+    img = PILImg.new("RGBA", (400, 400), (255, 255, 255, 0))
+    from PIL import ImageDraw, ImageFont
     draw = ImageDraw.Draw(img)
     
     draw.ellipse([20, 20, 380, 380], outline="#059669", width=12)
@@ -35,6 +37,20 @@ def create_unimal_logo():
 
     img.save(logo_path, "PNG")
     return logo_path
+
+def get_scaled_image(filename, target_width=13.5*cm):
+    path = os.path.join(SCREENSHOT_DIR, filename)
+    if os.path.exists(path):
+        try:
+            with PILImg.open(path) as im:
+                w, h = im.size
+                aspect = h / float(w)
+                # Cap max height to avoid page overflow
+                target_height = min(target_width * aspect, 9.5*cm)
+                return Image(path, width=target_width, height=target_height)
+        except Exception as e:
+            print(f"Error loading image {filename}: {e}")
+    return None
 
 def build_pdf():
     logo_path = create_unimal_logo()
@@ -99,6 +115,17 @@ def build_pdf():
         leading=18, # 1.5 spacing
         alignment=TA_JUSTIFY,
         spaceAfter=6
+    )
+
+    caption_style = ParagraphStyle(
+        'CaptionStyle',
+        parent=styles['Normal'],
+        fontName='Times-Italic',
+        fontSize=10,
+        leading=14,
+        alignment=TA_CENTER,
+        spaceBefore=4,
+        spaceAfter=10
     )
 
     bullet_style = ParagraphStyle(
@@ -181,18 +208,20 @@ def build_pdf():
     story.append(Paragraph(
         "Oleh karena itu, dibangun aplikasi Sistem Informasi Penggajian Karyawan (SIPGAJI) berbasis web menggunakan framework CodeIgniter 4 "
         "dan basis data MySQL. Sistem ini secara aktif mengimplementasikan metode matematis formal dan logika algoritmik otomatis untuk "
-        "menghitung pendapatan kotor, total potongan, dan gaji bersih (Take Home Pay) secara akurat dan efisien untuk 50 karyawan real, lengkap dengan portal mandiri edit profil karyawan dan navigasi mobile-responsive.", body_style
+        "menghitung pendapatan kotor, total potongan, dan gaji bersih (Take Home Pay) secara akurat dan efisien untuk 50 karyawan real, "
+        "lengkap dengan modul Audit Log Aktivitas Sistem, fitur Instant Live Search, modal kustom SweetAlert2, portal mandiri edit profil karyawan, "
+        "serta antarmuka mobile-responsive.", body_style
     ))
 
     story.append(Paragraph("1.2 Rumusan Masalah", heading2_style))
     story.append(Paragraph("1. Bagaimana merancang dan membangun sistem informasi penggajian karyawan berbasis web dengan CodeIgniter 4?", bullet_style))
     story.append(Paragraph("2. Bagaimana mengimplementasikan algoritma komputasi matematis otomatis untuk menghitung gaji bersih yang mencakup seluruh komponen tunjangan dan potongan?", bullet_style))
-    story.append(Paragraph("3. Bagaimana mengimplementasikan keamanan autentikasi role-based access, portal mandiri profil karyawan, serta antarmuka mobile-responsive?", bullet_style))
+    story.append(Paragraph("3. Bagaimana mengimplementasikan keamanan autentikasi role-based access, audit log aktivitas pengguna, modal konfirmasi SweetAlert2, serta antarmuka mobile-responsive?", bullet_style))
 
     story.append(Paragraph("1.3 Tujuan Pengembangan Sistem", heading2_style))
     story.append(Paragraph("1. Menghasilkan sistem penggajian karyawan otomatis berbasis CodeIgniter 4 yang responsif, terstruktur, dan aman.", bullet_style))
     story.append(Paragraph("2. Otomatisasi kalkulasi gaji bersih karyawan guna meminimalisir kesalahan perhitungan manual dan mempercepat proses pembuatan laporan gaji.", bullet_style))
-    story.append(Paragraph("3. Menyediakan portal mandiri bagi karyawan untuk memperbarui profil (foto avatar, kontak, alamat, password) dan melihat transparansi rincian slip gaji.", bullet_style))
+    story.append(Paragraph("3. Menyediakan portal audit log aktivitas sistem bagi Admin serta portal mandiri bagi karyawan untuk memperbarui profil dan mengakses bukti transfer pembayaran gaji.", bullet_style))
 
     story.append(Paragraph("1.4 Pembagian Tugas Kelompok (TIM - B)", heading2_style))
     
@@ -200,8 +229,8 @@ def build_pdf():
         [Paragraph("<b>No</b>", table_header_style), Paragraph("<b>Nama Anggota (NIM)</b>", table_header_style), Paragraph("<b>Peran & Pembagian Tugas Spesifik</b>", table_header_style)],
         [Paragraph("1", table_cell_center), Paragraph("RAHMI SAHARA (240170070)", table_cell_style), Paragraph("Ketua Tim, Perancangan ERD Database, Konfigurasi Framework CI4 & Migration", table_cell_style)],
         [Paragraph("2", table_cell_center), Paragraph("NICOIWAN ADHA KOBAT (240170207)", table_cell_style), Paragraph("Pengembangan Modul Controller Penggajian & Logika Perhitungan Matematis", table_cell_style)],
-        [Paragraph("3", table_cell_center), Paragraph("AZKAL AZKIYA (240170235)", table_cell_style), Paragraph("Pengembangan Modul Autentikasi RBAC, Master Data, & Edit Profil Karyawan", table_cell_style)],
-        [Paragraph("4", table_cell_center), Paragraph("ZAHRA (230170012)", table_cell_style), Paragraph("Desain Antarmuka Mobile-Responsive Bootstrap 5, Chart.js, & Pengujian System", table_cell_style)],
+        [Paragraph("3", table_cell_center), Paragraph("AZKAL AZKIYA (240170235)", table_cell_style), Paragraph("Pengembangan Modul Autentikasi RBAC, Master Data, Audit Log, & Profile", table_cell_style)],
+        [Paragraph("4", table_cell_center), Paragraph("ZAHRA (230170012)", table_cell_style), Paragraph("Desain Antarmuka Mobile-Responsive Bootstrap 5, SweetAlert2, Chart.js, & Pengujian System", table_cell_style)],
     ]
     t_tugas = Table(tugas_data, colWidths=[1.0*cm, 4.5*cm, 8.5*cm])
     t_tugas.setStyle(TableStyle([
@@ -262,8 +291,11 @@ def build_pdf():
     story.append(Paragraph("<b>1. Kebutuhan Fungsional:</b>", body_style))
     story.append(Paragraph("• Verifikasi login & pembatasan hak akses (Admin vs Karyawan).", bullet_style))
     story.append(Paragraph("• CRUD lengkap untuk Data Jabatan dan Data Karyawan (50 Record Real) oleh Admin.", bullet_style))
+    story.append(Paragraph("• Audit Log Aktivitas Sistem untuk mencatat rekam jejak perilaku pengguna secara real-time.", bullet_style))
+    story.append(Paragraph("• Fitur Instant Live Search dan Filter data penggajian tanpa reload.", bullet_style))
     story.append(Paragraph("• Fitur portal mandiri Edit Profil Karyawan (update foto avatar, kontak, alamat, & password).", bullet_style))
     story.append(Paragraph("• Otomatisasi perhitungan gaji berbasis rekap presensi dan skema jabatan.", bullet_style))
+    story.append(Paragraph("• Custom notification modal SweetAlert2 menggantikan confirm browser.", bullet_style))
     story.append(Paragraph("• Mobile-responsive antarmuka dengan Sidebar Offcanvas Drawer.", bullet_style))
 
     story.append(Paragraph("3.2 Perancangan Alur Sistem (Flowchart)", heading2_style))
@@ -284,7 +316,8 @@ def build_pdf():
         [Paragraph("jabatan", table_cell_center), Paragraph("id", table_cell_center), Paragraph("nama_jabatan, gaji_pokok, tunj_jabatan, tunj_makan_per_hari, tunj_transport_per_hari", table_cell_style)],
         [Paragraph("karyawan", table_cell_center), Paragraph("id", table_cell_center), Paragraph("user_id (FK users.id), nip, nama, jenis_kelamin, jabatan_id (FK jabatan.id), status_nikah, jumlah_anak, foto", table_cell_style)],
         [Paragraph("presensi", table_cell_center), Paragraph("id", table_cell_center), Paragraph("karyawan_id (FK karyawan.id), bulan, tahun, jumlah_hadir, jumlah_sakit, jumlah_izin, jumlah_alpa, jumlah_lembur_jam", table_cell_style)],
-        [Paragraph("penggajian", table_cell_center), Paragraph("id", table_cell_center), Paragraph("kode_transaksi, karyawan_id (FK karyawan.id), bulan, tahun, total_pendapatan, total_potongan, gaji_bersih, status_bayar", table_cell_style)],
+        [Paragraph("penggajian", table_cell_center), Paragraph("id", table_cell_center), Paragraph("kode_transaksi, karyawan_id (FK karyawan.id), bulan, tahun, total_pendapatan, total_potongan, gaji_bersih, status_bayar, foto_bukti_transfer", table_cell_style)],
+        [Paragraph("activity_logs", table_cell_center), Paragraph("id", table_cell_center), Paragraph("user_id, username, role, action, description, ip_address, created_at", table_cell_style)],
     ]
     t_db = Table(db_tables_data, colWidths=[2.5*cm, 2.5*cm, 9.0*cm])
     t_db.setStyle(TableStyle([
@@ -306,9 +339,39 @@ def build_pdf():
     story.append(Paragraph("• Server Web / Environment: PHP 8.5+ & Laragon Localhost", bullet_style))
     story.append(Paragraph("• Framework Backend: CodeIgniter v4.7.4", bullet_style))
     story.append(Paragraph("• Database Engine: MySQL 9.7 (InnoDB)", bullet_style))
-    story.append(Paragraph("• Frontend Framework: Bootstrap 5.3 Mobile-Ready & Chart.js Library", bullet_style))
+    story.append(Paragraph("• Frontend Framework: Bootstrap 5.3 Mobile-Ready, SweetAlert2, & Chart.js Library", bullet_style))
 
-    story.append(Paragraph("4.2 Snippet Kode Logika Komputasi Gaji", heading2_style))
+    story.append(Paragraph("4.2 Implementasi Antarmuka (User Interface & Screenshots)", heading2_style))
+    story.append(Paragraph("Berikut adalah dokumentasi tangkapan layar (screenshot) antarmuka utama aplikasi SIPGAJI:", body_style))
+
+    screenshots_list = [
+        ("HalmanLogin.png", "Gambar 4.1 Halaman Login & Validasi Keamanan Sistem"),
+        ("Admin-Dashboard.png", "Gambar 4.2 Halaman Dashboard Admin & Widget Audit Log Terkini"),
+        ("Admin-DataKaryawan.png", "Gambar 4.3 Master Data Karyawan & Tombol Detail Profil Modal"),
+        ("Admin-DataJabatan.png", "Gambar 4.4 Master Data Jabatan & Skema Gaji"),
+        ("Admin-RekapPresensi.png", "Gambar 4.5 Rekapitulasi Presensi Karyawan"),
+        ("Admin-PerhitunganGaji.png", "Gambar 4.6 Perhitungan Gaji Otomatis & Live Search Filter"),
+        ("Admin-LogAktifitas.png", "Gambar 4.7 Audit Log Aktivitas Sistem (Activity Log Admin)"),
+        ("Admin-EditProfil.png", "Gambar 4.8 Halaman Edit Profil & Kredensial Admin"),
+        ("Karyawan-Dasboard.png", "Gambar 4.9 Dashboard Mandiri Karyawan"),
+        ("Karyawan-Presensi.png", "Gambar 4.10 Rekap Presensi Karyawan"),
+        ("Karyawan-SlipGaji.png", "Gambar 4.11 Riwayat Slip Gaji Karyawan & Bukti Transfer"),
+        ("CetakSlipGaji.png", "Gambar 4.12 Tampilan Lembar Slip Gaji Resmi Karyawan"),
+        ("Karyawan-EditProfil.png", "Gambar 4.13 Portal Edit Profil Mandiri Karyawan"),
+        ("ModalHapus.png", "Gambar 4.14 Dialog Konfirmasi Hapus SweetAlert2 Modern"),
+        ("ModalBerhasil.png", "Gambar 4.15 Notifikasi Flash Toast Berhasil SweetAlert2"),
+        ("Kelompok.png", "Gambar 4.16 Modal Informasi Anggota Tim Kelompok B UAS"),
+    ]
+
+    for img_file, caption in screenshots_list:
+        img_obj = get_scaled_image(img_file)
+        if img_obj:
+            story.append(KeepTogether([
+                img_obj,
+                Paragraph(caption, caption_style)
+            ]))
+
+    story.append(Paragraph("4.3 Snippet Kode Logika Komputasi Gaji", heading2_style))
     
     code_snippet = """// Kalkulasi Komponen Pendapatan & Potongan
 $gajiPokok   = (float)$karyawan['gaji_pokok'];
@@ -348,16 +411,19 @@ $gajiBersih    = $totalPendapatan - $totalPotongan;"""
     story.append(t_code)
     story.append(Spacer(1, 0.4*cm))
 
-    story.append(Paragraph("4.3 Pengujian Sistem (Black Box Testing)", heading2_style))
+    story.append(Paragraph("4.4 Pengujian Sistem (Black Box Testing)", heading2_style))
     
     blackbox_data = [
         [Paragraph("<b>Fitur Skenario</b>", table_header_style), Paragraph("<b>Input / Aksi</b>", table_header_style), Paragraph("<b>Hasil Yang Diharapkan</b>", table_header_style), Paragraph("<b>Status</b>", table_header_style)],
         [Paragraph("Autentikasi Login", table_cell_style), Paragraph("Username & Password benar", table_cell_style), Paragraph("Masuk ke dashboard sesuai role", table_cell_style), Paragraph("PASSED", table_cell_center)],
         [Paragraph("Validasi Login", table_cell_style), Paragraph("Password salah / kosong", table_cell_style), Paragraph("Menampilkan pesan alert error", table_cell_style), Paragraph("PASSED", table_cell_center)],
         [Paragraph("CRUD Karyawan (Admin)", table_cell_style), Paragraph("Input data 50 Karyawan", table_cell_style), Paragraph("Tersimpan di DB tanpa error validasi", table_cell_style), Paragraph("PASSED", table_cell_center)],
+        [Paragraph("Audit Log Aktivitas", table_cell_style), Paragraph("Aksi pengguna di aplikasi", table_cell_style), Paragraph("Tercatat otomatis di activity_logs", table_cell_style), Paragraph("PASSED", table_cell_center)],
+        [Paragraph("Live Search Filter", table_cell_style), Paragraph("Ketik nama / NIP karyawan", table_cell_style), Paragraph("Tabel tersaring instant tanpa reload", table_cell_style), Paragraph("PASSED", table_cell_center)],
+        [Paragraph("SweetAlert2 Confirm", table_cell_style), Paragraph("Klik Hapus / Hitung Gaji", table_cell_style), Paragraph("Muncul dialog modal custom SweetAlert2", table_cell_style), Paragraph("PASSED", table_cell_center)],
         [Paragraph("Edit Profil (Karyawan)", table_cell_style), Paragraph("Update foto avatar & password", table_cell_style), Paragraph("Profil & password ter-update", table_cell_style), Paragraph("PASSED", table_cell_center)],
         [Paragraph("Komputasi Gaji", table_cell_style), Paragraph("Klik tombol Hitung Gaji", table_cell_style), Paragraph("Gaji bersih terhitung akurat 100%", table_cell_style), Paragraph("PASSED", table_cell_center)],
-        [Paragraph("Upload Bukti Transfer", table_cell_style), Paragraph("Upload file transfer JPG/PDF", table_cell_style), Paragraph("Status berubah menjadi Lunas", table_cell_style), Paragraph("PASSED", table_cell_center)],
+        [Paragraph("Upload Bukti Transfer", table_cell_style), Paragraph("Upload file transfer JPG/PDF", table_cell_style), Paragraph("Status Lunas & Bukti dapat diakses user", table_cell_style), Paragraph("PASSED", table_cell_center)],
         [Paragraph("Cetak Slip Gaji", table_cell_style), Paragraph("Klik tombol Slip Gaji", table_cell_style), Paragraph("Tampil format cetak slip resmi", table_cell_style), Paragraph("PASSED", table_cell_center)],
     ]
     t_bb = Table(blackbox_data, colWidths=[3.0*cm, 3.5*cm, 5.5*cm, 2.0*cm])
@@ -381,7 +447,8 @@ $gajiBersih    = $totalPendapatan - $totalPotongan;"""
         "dapat disimpulkan bahwa aplikasi SIPGAJI telah berhasil dibangun sesuai dengan spesifikasi tugas UAS PBL. "
         "Sistem tidak hanya menjalankan fungsi manajemen data (CRUD 50 Karyawan) secara komprehensif, tetapi juga berhasil mengotomatiskan "
         "perhitungan gaji bersih karyawan berbasis rumus matematis formal yang mencakup seluruh komponen tunjangan, bonus lembur, "
-        "BPJS, PPh 21, dan potongan absensi dengan akurasi 100%, lengkap dengan portal mandiri edit profil karyawan dan antarmuka mobile-responsive.", body_style
+        "BPJS, PPh 21, dan potongan absensi dengan akurasi 100%, lengkap dengan audit log aktivitas sistem, live instant search, "
+        "modal SweetAlert2, transparansi bukti transfer, portal mandiri edit profil karyawan, dan antarmuka mobile-responsive.", body_style
     ))
 
     story.append(Paragraph("5.2 Saran", heading2_style))
@@ -406,7 +473,6 @@ $gajiBersih    = $totalPendapatan - $totalPotongan;"""
     mock_headers = [Paragraph("<b>NIP</b>", table_header_style), Paragraph("<b>Nama Karyawan</b>", table_header_style), Paragraph("<b>Jabatan</b>", table_header_style), Paragraph("<b>Gaji Bersih</b>", table_header_style)]
     mock_rows = [mock_headers]
     
-    # Query database or mock 15 sample rows for report page limit
     mock_list = [
         ("NIP2026001", "Ahmad Rizki", "Manager IT", "14.296.994"),
         ("NIP2026002", "Budi Santoso", "Senior Software Engineer", "11.196.445"),
@@ -448,11 +514,11 @@ $gajiBersih    = $totalPendapatan - $totalPotongan;"""
     
     logbook_list = [
         ("1", "20 Juli 2026", "Diskusi penentuan topik proyek penggajian otomatis dan pembagian tugas anggota kelompok Tim B.", "RAHMI SAHARA"),
-        ("2", "22 Juli 2026", "Merancang skema ERD basis data MySQL (tabel users, jabatan, karyawan, presensi, penggajian).", "NICOIWAN ADHA KOBAT"),
+        ("2", "22 Juli 2026", "Merancang skema ERD basis data MySQL (tabel users, jabatan, karyawan, presensi, penggajian, activity_logs).", "NICOIWAN ADHA KOBAT"),
         ("3", "25 Juli 2026", "Membangun struktur framework CI4, migration, seeder mock data 50 baris real, dan AuthFilter RBAC.", "AZKAL AZKIYA"),
         ("4", "28 Juli 2026", "Pengembangan Controller Penggajian, perumusan algoritma kalkulasi gaji otomatis, dan upload file.", "RAHMI SAHARA"),
         ("5", "30 Juli 2026", "Desain antarmuka Mobile-Ready Bootstrap 5, Chart.js dashboard, dan layout cetak slip gaji karyawan.", "ZAHRA"),
-        ("6", "02 Agustus 2026", "Pengujian Black Box Testing, perbaikan upload foto admin, modul Edit Profil, seeder 50 real rows & finalisasi Laporan PBL.", "Tim B"),
+        ("6", "02 Agustus 2026", "Pengujian Black Box Testing, Audit Log Aktivitas, SweetAlert2 modal popup, live search, seeder 50 real rows & finalisasi Laporan PBL.", "Tim B"),
     ]
 
     for item in logbook_list:
