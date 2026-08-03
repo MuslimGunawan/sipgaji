@@ -6,15 +6,17 @@ use App\Models\KaryawanModel;
 use App\Models\JabatanModel;
 use App\Models\PresensiModel;
 use App\Models\PenggajianModel;
+use App\Models\ActivityLogModel;
 
 class Dashboard extends BaseController
 {
     public function index()
     {
-        $karyawanModel  = new KaryawanModel();
-        $jabatanModel   = new JabatanModel();
-        $presensiModel  = new PresensiModel();
+        $karyawanModel   = new KaryawanModel();
+        $jabatanModel    = new JabatanModel();
+        $presensiModel   = new PresensiModel();
         $penggajianModel = new PenggajianModel();
+        $activityLogModel = new ActivityLogModel();
 
         $role = session()->get('role');
         $karyawanId = session()->get('karyawanId');
@@ -51,6 +53,9 @@ class Dashboard extends BaseController
                                                  ->groupBy('j.id')
                                                  ->get()
                                                  ->getResultArray();
+
+            // Recent System Activity Logs Widget
+            $data['recentLogs'] = $activityLogModel->getLogs(null, null, 6);
         } else {
             // Karyawan View
             $data['karyawanInfo'] = $karyawanModel->getKaryawanWithJabatan($karyawanId);

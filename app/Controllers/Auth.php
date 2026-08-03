@@ -73,6 +73,10 @@ class Auth extends BaseController
                 if (function_exists('session_write_close')) {
                     session_write_close();
                 }
+
+                // Log Activity
+                \App\Models\ActivityLogModel::log('LOGIN', "User {$user['username']} ({$namaLengkap}) berhasil login ke dalam sistem", $user['id'], $user['username'], $user['role']);
+
                 return redirect()->to('/dashboard')->with('success', 'Selamat datang kembali, ' . esc($namaLengkap) . '!');
             } else {
                 return redirect()->back()->withInput()->with('error', 'Password yang Anda masukkan salah.');
@@ -84,6 +88,14 @@ class Auth extends BaseController
 
     public function logout()
     {
+        $userId   = session()->get('userId');
+        $username = session()->get('username');
+        $role     = session()->get('role');
+
+        if ($username) {
+            \App\Models\ActivityLogModel::log('LOGOUT', "User {$username} melakukan logout dari sistem", $userId, $username, $role);
+        }
+
         session()->destroy();
         return redirect()->to('/login')->with('success', 'Anda telah berhasil keluar dari sistem.');
     }

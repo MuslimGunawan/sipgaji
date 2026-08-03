@@ -43,5 +43,9 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         // Penggajian & Komputasi
         $routes->post('penggajian/hitung', 'Penggajian::hitungOtomatis');
         $routes->post('penggajian/upload-bukti/(:num)', 'Penggajian::uploadBukti/$1');
+
+        // Log Aktivitas System
+        $routes->get('activity-logs', 'ActivityLog::index');
+        $routes->post('activity-logs/clear', 'ActivityLog::clear');
     });
 });

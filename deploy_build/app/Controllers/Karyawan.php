@@ -113,10 +113,13 @@ class Karyawan extends BaseController
         $namaFoto = $this->saveUploadedPhoto($fotoFile, 'default.png');
 
         // 3. Create Karyawan Data
+        $namaKaryawan = $this->request->getPost('nama');
+        $nipKaryawan  = $this->request->getPost('nip');
+
         $this->karyawanModel->insert([
             'user_id'       => $userId,
-            'nip'           => $this->request->getPost('nip'),
-            'nama'          => $this->request->getPost('nama'),
+            'nip'           => $nipKaryawan,
+            'nama'          => $namaKaryawan,
             'jenis_kelamin' => $this->request->getPost('jenis_kelamin'),
             'tempat_lahir'  => $this->request->getPost('tempat_lahir'),
             'tanggal_lahir' => $this->request->getPost('tanggal_lahir') ?: null,
@@ -128,6 +131,8 @@ class Karyawan extends BaseController
             'status_nikah'  => $this->request->getPost('status_nikah'),
             'jumlah_anak'   => $this->request->getPost('jumlah_anak'),
         ]);
+
+        \App\Models\ActivityLogModel::log('TAMBAH_KARYAWAN', "Admin menambahkan karyawan baru: {$namaKaryawan} (NIP: {$nipKaryawan})");
 
         return redirect()->to('/karyawan')->with('success', 'Data Karyawan & Akun User berhasil dibuat.');
     }
@@ -158,9 +163,12 @@ class Karyawan extends BaseController
         $fotoFile = $this->request->getFile('foto');
         $namaFoto = $this->saveUploadedPhoto($fotoFile, $oldFoto);
 
+        $namaKaryawan = $this->request->getPost('nama');
+        $nipKaryawan  = $this->request->getPost('nip');
+
         $this->karyawanModel->update($id, [
-            'nip'           => $this->request->getPost('nip'),
-            'nama'          => $this->request->getPost('nama'),
+            'nip'           => $nipKaryawan,
+            'nama'          => $namaKaryawan,
             'jenis_kelamin' => $this->request->getPost('jenis_kelamin'),
             'tempat_lahir'  => $this->request->getPost('tempat_lahir'),
             'tanggal_lahir' => $this->request->getPost('tanggal_lahir') ?: null,
@@ -173,10 +181,12 @@ class Karyawan extends BaseController
             'jumlah_anak'   => $this->request->getPost('jumlah_anak'),
         ]);
 
+        \App\Models\ActivityLogModel::log('EDIT_KARYAWAN', "Admin memperbarui data karyawan: {$namaKaryawan} (NIP: {$nipKaryawan})");
+
         // If the updated Karyawan belongs to currently logged in session user, update session foto & name
         if (session()->get('userId') == $karyawan['user_id']) {
             session()->set('foto', $namaFoto);
-            session()->set('namaLengkap', $this->request->getPost('nama'));
+            session()->set('namaLengkap', $namaKaryawan);
             if (function_exists('session_write_close')) {
                 session_write_close();
             }
@@ -202,6 +212,9 @@ class Karyawan extends BaseController
         }
 
         $this->karyawanModel->delete($id);
+
+        \App\Models\ActivityLogModel::log('HAPUS_KARYAWAN', "Admin menghapus data karyawan: {$karyawan['nama']} (NIP: {$karyawan['nip']})");
+
         return redirect()->to('/karyawan')->with('success', 'Data Karyawan & Akun User berhasil dihapus.');
     }
 }

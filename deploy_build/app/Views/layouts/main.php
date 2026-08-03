@@ -207,6 +207,63 @@
             }
         }
 
+        /* Responsive Mobile Table & Action Controls */
+        .table-responsive .table {
+            white-space: nowrap;
+        }
+        .table-responsive {
+            -webkit-overflow-scrolling: touch;
+            border-radius: 12px;
+        }
+        .table-responsive::-webkit-scrollbar {
+            height: 6px;
+        }
+        .table-responsive::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        @media (max-width: 575.98px) {
+            .main-container {
+                padding: 0.5rem !important;
+            }
+            .card-custom {
+                padding: 0.85rem !important;
+                border-radius: 14px;
+            }
+            .header-action-group {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                width: 100%;
+            }
+            .header-action-group > form,
+            .header-action-group > .btn,
+            .header-action-group > select {
+                width: 100% !important;
+            }
+            .header-action-group .input-group {
+                width: 100% !important;
+                display: flex !important;
+                flex-wrap: nowrap !important;
+            }
+            .header-action-group .input-group .form-control,
+            .header-action-group .input-group .form-select {
+                flex: 1 1 auto !important;
+                width: 1% !important;
+            }
+            .header-action-group .input-group .btn {
+                width: auto !important;
+                flex: 0 0 auto !important;
+            }
+        }
+
         /* Mobile Offcanvas Sidebar */
         .offcanvas-sidebar {
             background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%);
@@ -319,6 +376,9 @@
                 <a href="<?= base_url('penggajian') ?>" class="nav-link <?= uri_string() === 'penggajian' ? 'active' : '' ?>" title="Perhitungan Gaji">
                     <i class="fa-solid fa-money-bill-wave"></i> <span class="nav-text">Perhitungan Gaji</span>
                 </a>
+                <a href="<?= base_url('activity-logs') ?>" class="nav-link <?= uri_string() === 'activity-logs' ? 'active' : '' ?>" title="Log Aktivitas">
+                    <i class="fa-solid fa-clock-rotate-left"></i> <span class="nav-text">Log Aktivitas</span>
+                </a>
             <?php else: ?>
                 <div class="px-3 mt-4 mb-2 text-uppercase font-monospace text-white-50 sidebar-category" style="font-size: 10px;">Layanan Karyawan</div>
                 <a href="<?= base_url('presensi') ?>" class="nav-link <?= uri_string() === 'presensi' ? 'active' : '' ?>" title="Presensi Saya">
@@ -381,6 +441,9 @@
                 </a>
                 <a href="<?= base_url('penggajian') ?>" class="nav-link <?= uri_string() === 'penggajian' ? 'active' : '' ?>">
                     <i class="fa-solid fa-money-bill-wave"></i> Perhitungan Gaji
+                </a>
+                <a href="<?= base_url('activity-logs') ?>" class="nav-link <?= uri_string() === 'activity-logs' ? 'active' : '' ?>">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Log Aktivitas
                 </a>
             <?php else: ?>
                 <div class="px-3 mt-3 mb-2 text-uppercase font-monospace text-white-50" style="font-size: 10px;">Layanan Karyawan</div>

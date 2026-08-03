@@ -140,6 +140,8 @@ class Penggajian extends BaseController
             $countProcessed++;
         }
 
+        \App\Models\ActivityLogModel::log('HITUNG_GAJI', "Admin menjalankan perhitungan gaji otomatis untuk {$countProcessed} karyawan (Periode Bulan {$bulan} / {$tahun})");
+
         return redirect()->to('/penggajian?bulan=' . $bulan . '&tahun=' . $tahun)
             ->with('success', "Perhitungan Gaji Otomatis berhasil diproses untuk {$countProcessed} karyawan pada Bulan {$bulan} Tahun {$tahun}.");
     }

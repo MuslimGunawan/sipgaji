@@ -78,6 +78,77 @@
         </div>
     </div>
 
+    <!-- Recent System Activity Logs Widget -->
+    <div class="card card-custom p-4 mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h6 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-clock-rotate-left text-primary me-2"></i> Log Aktivitas System Terkini</h6>
+                <small class="text-muted">Rekam jejak tindakan dan perilaku pengguna di aplikasi</small>
+            </div>
+            <a href="<?= base_url('activity-logs') ?>" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                Lihat Semua Log <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" style="font-size: 0.85rem;">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 160px;">Waktu</th>
+                        <th style="width: 150px;">User</th>
+                        <th style="width: 130px;">Aksi</th>
+                        <th>Aktivitas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (! empty($recentLogs)): ?>
+                        <?php foreach ($recentLogs as $log): ?>
+                            <tr>
+                                <td class="text-muted" style="font-size: 0.78rem;">
+                                    <i class="fa-regular fa-clock me-1"></i>
+                                    <?= date('d/m/Y H:i', strtotime($log['created_at'])) ?>
+                                </td>
+                                <td>
+                                    <span class="fw-bold text-dark"><?= esc($log['username']) ?></span>
+                                    <small class="badge <?= $log['role'] === 'admin' ? 'bg-danger-subtle text-danger' : 'bg-primary-subtle text-primary' ?> px-2 py-0 ms-1" style="font-size: 0.68rem;">
+                                        <?= esc($log['role']) ?>
+                                    </small>
+                                </td>
+                                <td>
+                                    <?php
+                                    $action = strtoupper($log['action']);
+                                    $badgeClass = 'bg-secondary-subtle text-secondary';
+                                    if ($action === 'LOGIN') {
+                                        $badgeClass = 'bg-success-subtle text-success';
+                                    } elseif (in_array($action, ['HITUNG_GAJI', 'UPLOAD_BUKTI_GAJI'])) {
+                                        $badgeClass = 'bg-primary-subtle text-primary';
+                                    } elseif (str_contains($action, 'TAMBAH') || $action === 'INPUT_PRESENSI') {
+                                        $badgeClass = 'bg-info-subtle text-info';
+                                    } elseif (str_contains($action, 'EDIT')) {
+                                        $badgeClass = 'bg-warning-subtle text-warning';
+                                    } elseif (str_contains($action, 'HAPUS')) {
+                                        $badgeClass = 'bg-danger-subtle text-danger';
+                                    }
+                                    ?>
+                                    <span class="badge <?= $badgeClass ?> fw-bold px-2 py-1" style="font-size: 0.75rem;">
+                                        <?= esc($log['action']) ?>
+                                    </span>
+                                </td>
+                                <td class="fw-medium text-dark text-break">
+                                    <?= esc($log['description']) ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-3">Belum ada riwayat aktivitas.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             // Data Chart 1: Bar Chart

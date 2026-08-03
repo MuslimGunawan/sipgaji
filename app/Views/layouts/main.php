@@ -376,6 +376,9 @@
                 <a href="<?= base_url('penggajian') ?>" class="nav-link <?= uri_string() === 'penggajian' ? 'active' : '' ?>" title="Perhitungan Gaji">
                     <i class="fa-solid fa-money-bill-wave"></i> <span class="nav-text">Perhitungan Gaji</span>
                 </a>
+                <a href="<?= base_url('activity-logs') ?>" class="nav-link <?= uri_string() === 'activity-logs' ? 'active' : '' ?>" title="Log Aktivitas">
+                    <i class="fa-solid fa-clock-rotate-left"></i> <span class="nav-text">Log Aktivitas</span>
+                </a>
             <?php else: ?>
                 <div class="px-3 mt-4 mb-2 text-uppercase font-monospace text-white-50 sidebar-category" style="font-size: 10px;">Layanan Karyawan</div>
                 <a href="<?= base_url('presensi') ?>" class="nav-link <?= uri_string() === 'presensi' ? 'active' : '' ?>" title="Presensi Saya">
@@ -438,6 +441,9 @@
                 </a>
                 <a href="<?= base_url('penggajian') ?>" class="nav-link <?= uri_string() === 'penggajian' ? 'active' : '' ?>">
                     <i class="fa-solid fa-money-bill-wave"></i> Perhitungan Gaji
+                </a>
+                <a href="<?= base_url('activity-logs') ?>" class="nav-link <?= uri_string() === 'activity-logs' ? 'active' : '' ?>">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Log Aktivitas
                 </a>
             <?php else: ?>
                 <div class="px-3 mt-3 mb-2 text-uppercase font-monospace text-white-50" style="font-size: 10px;">Layanan Karyawan</div>
