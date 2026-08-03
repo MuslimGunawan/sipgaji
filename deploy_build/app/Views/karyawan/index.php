@@ -64,7 +64,7 @@
                                 <button type="button" class="btn btn-sm btn-outline-warning rounded-circle me-1" data-bs-toggle="modal" data-bs-target="#modalEditKaryawan<?= $k['id'] ?>" title="Edit">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
-                                <a href="<?= base_url('karyawan/delete/' . $k['id']) ?>" class="btn btn-sm btn-outline-danger rounded-circle" onclick="return confirm('Yakin ingin menghapus data karyawan ini beserta akun penggunanya?')" title="Hapus">
+                                <a href="<?= base_url('karyawan/delete/' . $k['id']) ?>" class="btn btn-sm btn-outline-danger rounded-circle btn-confirm-delete" data-confirm-text="Yakin ingin menghapus data karyawan <?= esc($k['nama']) ?> beserta akun penggunanya?" title="Hapus Data">
                                     <i class="fa-solid fa-trash"></i>
                                 </a>
                             </td>

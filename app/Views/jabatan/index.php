@@ -42,7 +42,7 @@
                                 <button type="button" class="btn btn-sm btn-outline-warning rounded-circle" data-bs-toggle="modal" data-bs-target="#modalEditJabatan<?= $j['id'] ?>" title="Edit">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
-                                <a href="<?= base_url('jabatan/delete/' . $j['id']) ?>" class="btn btn-sm btn-outline-danger rounded-circle" onclick="return confirm('Yakin ingin menghapus data jabatan ini?')" title="Hapus">
+                                <a href="<?= base_url('jabatan/delete/' . $j['id']) ?>" class="btn btn-sm btn-outline-danger rounded-circle btn-confirm-delete" data-confirm-text="Yakin ingin menghapus data jabatan <?= esc($j['nama_jabatan']) ?>?" title="Hapus Data">
                                     <i class="fa-solid fa-trash"></i>
                                 </a>
                             </td>

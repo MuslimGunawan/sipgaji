@@ -33,7 +33,7 @@
                 </div>
             </form>
 
-            <form action="<?= base_url('activity-logs/clear') ?>" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus seluruh data histori log aktivitas?')">
+            <form action="<?= base_url('activity-logs/clear') ?>" method="POST" class="form-confirm-action" data-confirm-title="Bersihkan Histori Log?" data-confirm-text="Apakah Anda yakin ingin menghapus seluruh data histori log aktivitas?" data-confirm-button="Ya, Bersihkan Log">
                 <?= csrf_field() ?>
                 <button type="submit" class="btn btn-outline-danger rounded-pill px-3 text-nowrap w-100">
                     <i class="fa-solid fa-trash-can me-1"></i> Bersihkan Log

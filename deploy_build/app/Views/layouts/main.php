@@ -22,6 +22,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         :root {
@@ -632,6 +634,86 @@
                     localStorage.setItem('sipgaji_sidebar_collapsed', isCollapsed);
                 });
             }
+
+            // 1. Toast / SweetAlert for Flash Messages
+            <?php if (session()->getFlashdata('success')): ?>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: <?= json_encode(session()->getFlashdata('success')) ?>,
+                    timer: 2500,
+                    showConfirmButton: false,
+                    customClass: { popup: 'rounded-4 shadow-lg border-0' }
+                });
+            <?php endif; ?>
+
+            <?php if (session()->getFlashdata('error')): ?>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Perhatian!',
+                    text: <?= json_encode(session()->getFlashdata('error')) ?>,
+                    confirmButtonColor: '#4f46e5',
+                    customClass: { popup: 'rounded-4 shadow-lg border-0' }
+                });
+            <?php endif; ?>
+
+            // 2. Custom Delete Link Handler (<a> with class btn-confirm-delete or data-confirm-text)
+            document.querySelectorAll('.btn-confirm-delete, [data-confirm-delete]').forEach(element => {
+                element.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetUrl = this.getAttribute('href');
+                    const message = this.getAttribute('data-confirm-text') || 'Data yang dihapus tidak dapat dikembalikan!';
+
+                    Swal.fire({
+                        title: 'Apakah Anda Yakin?',
+                        text: message,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#ef4444',
+                        cancelButtonColor: '#64748b',
+                        confirmButtonText: '<i class="fa-solid fa-trash me-1"></i> Ya, Hapus!',
+                        cancelButtonText: 'Batal',
+                        customClass: { popup: 'rounded-4 shadow-lg border-0' }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = targetUrl;
+                        }
+                    });
+                });
+            });
+
+            // 3. Custom Form Submit Action Handler (<form> or <button> with form-confirm-action or data-confirm-title)
+            document.querySelectorAll('form.form-confirm-action, [data-confirm-title]').forEach(element => {
+                const form = element.tagName === 'FORM' ? element : element.closest('form');
+                if (form) {
+                    form.addEventListener('submit', function(e) {
+                        if (form.getAttribute('data-swal-confirmed') === 'true') {
+                            return true;
+                        }
+                        e.preventDefault();
+                        const title = form.getAttribute('data-confirm-title') || element.getAttribute('data-confirm-title') || 'Konfirmasi Tindakan';
+                        const text = form.getAttribute('data-confirm-text') || element.getAttribute('data-confirm-text') || 'Apakah Anda yakin ingin memproses tindakan ini?';
+                        const confirmText = form.getAttribute('data-confirm-button') || element.getAttribute('data-confirm-button') || 'Ya, Lanjutkan';
+
+                        Swal.fire({
+                            title: title,
+                            text: text,
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: '#10b981',
+                            cancelButtonColor: '#64748b',
+                            confirmButtonText: confirmText,
+                            cancelButtonText: 'Batal',
+                            customClass: { popup: 'rounded-4 shadow-lg border-0' }
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                form.setAttribute('data-swal-confirmed', 'true');
+                                form.submit();
+                            }
+                        });
+                    });
+                }
+            });
         });
     </script>
 </body>

@@ -36,7 +36,7 @@
             </form>
 
             <?php if (session()->get('role') === 'admin'): ?>
-                <form action="<?= base_url('penggajian/hitung') ?>" method="POST" onsubmit="return confirm('Jalankan kalkulasi gaji otomatis untuk SELURUH KARYAWAN pada Bulan <?= $bulan ?> Tahun <?= $tahun ?>?')">
+                <form action="<?= base_url('penggajian/hitung') ?>" method="POST" class="form-confirm-action" data-confirm-title="Kalkulasi Gaji Otomatis?" data-confirm-text="Jalankan kalkulasi gaji otomatis untuk SELURUH KARYAWAN pada Bulan <?= $bulan ?> Tahun <?= $tahun ?>?" data-confirm-button="Ya, Hitung Sekarang">
                     <?= csrf_field() ?>
                     <input type="hidden" name="bulan" value="<?= $bulan ?>">
                     <input type="hidden" name="tahun" value="<?= $tahun ?>">
