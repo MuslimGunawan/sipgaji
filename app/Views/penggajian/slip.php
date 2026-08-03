@@ -208,7 +208,7 @@
             <div class="col-6">
                 <p class="mb-5 text-muted">Lhokseumawe, <?= date('d F Y', strtotime($gaji['created_at'])) ?><br>Manager Keuangan & HRD,</p>
                 <div class="fw-bold text-dark text-decoration-underline">Rizki Suwanda, S.T., M.Kom</div>
-                <small class="text-muted">NIP. 19880512 201504 1 002</small>
+                <small class="text-muted">NIP. 19910917 202203 1 006</small>
             </div>
         </div>
     </div>
