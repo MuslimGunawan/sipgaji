@@ -59,9 +59,17 @@
             gap: 0.5rem;
         }
 
-        /* Dedicated Signature Space */
+        /* Perfect Equal-Height Signature Alignment */
+        .signature-header {
+            min-height: 65px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
         .signature-space {
-            height: 60px;
+            height: 55px;
             width: 100%;
         }
 
@@ -98,8 +106,11 @@
             .table-itemized td, .table-itemized th {
                 font-size: 0.8rem;
             }
+            .signature-header {
+                min-height: 75px;
+            }
             .signature-space {
-                height: 55px;
+                height: 45px;
             }
         }
 
@@ -248,20 +259,28 @@
             <h3 class="fw-extrabold mb-0 text-success text-nowrap">Rp <?= number_format($gaji['gaji_bersih'], 0, ',', '.') ?></h3>
         </div>
 
-        <!-- Signatures (Dedicated Signature Space) -->
+        <!-- Signatures (Synchronized Baseline & Equal Signature Space) -->
         <div class="row text-center mt-4" style="font-size: 0.85rem;">
             <div class="col-6">
-                <p class="mb-0 text-muted">Penerima Gaji,</p>
+                <div class="signature-header">
+                    <p class="mb-0 text-muted">Penerima Gaji,</p>
+                </div>
                 <div class="signature-space"></div>
-                <div class="fw-bold text-dark text-decoration-underline text-break"><?= esc($gaji['nama']) ?></div>
-                <small class="text-muted text-break">NIP: <?= esc($gaji['nip']) ?></small>
+                <div class="signature-footer">
+                    <div class="fw-bold text-dark text-decoration-underline text-break"><?= esc($gaji['nama']) ?></div>
+                    <small class="text-muted text-break">NIP: <?= esc($gaji['nip']) ?></small>
+                </div>
             </div>
             <div class="col-6">
-                <p class="mb-0 text-muted">Lhokseumawe, <?= date('d F Y', strtotime($gaji['created_at'])) ?></p>
-                <p class="mb-0 text-muted">Manager Keuangan & HRD,</p>
+                <div class="signature-header">
+                    <p class="mb-0 text-muted">Lhokseumawe, <?= date('d F Y', strtotime($gaji['created_at'])) ?></p>
+                    <p class="mb-0 text-muted">Manager Keuangan & HRD,</p>
+                </div>
                 <div class="signature-space"></div>
-                <div class="fw-bold text-dark text-decoration-underline text-break">Rizki Suwanda, S.T., M.Kom</div>
-                <small class="text-muted text-break">NIP. 19910917 202203 1 006</small>
+                <div class="signature-footer">
+                    <div class="fw-bold text-dark text-decoration-underline text-break">Rizki Suwanda, S.T., M.Kom</div>
+                    <small class="text-muted text-break">NIP. 19910917 202203 1 006</small>
+                </div>
             </div>
         </div>
     </div>
