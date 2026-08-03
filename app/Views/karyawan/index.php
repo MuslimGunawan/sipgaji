@@ -58,7 +58,10 @@
                             <td><?= esc($k['no_telp'] ?? '-') ?></td>
                             <td><?= date('d/m/Y', strtotime($k['tanggal_masuk'])) ?></td>
                             <td class="text-center">
-                                <button type="button" class="btn btn-sm btn-outline-warning rounded-circle" data-bs-toggle="modal" data-bs-target="#modalEditKaryawan<?= $k['id'] ?>" title="Edit">
+                                <button type="button" class="btn btn-sm btn-outline-info rounded-circle me-1" data-bs-toggle="modal" data-bs-target="#modalDetailKaryawan<?= $k['id'] ?>" title="Detail Karyawan">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-warning rounded-circle me-1" data-bs-toggle="modal" data-bs-target="#modalEditKaryawan<?= $k['id'] ?>" title="Edit">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
                                 <a href="<?= base_url('karyawan/delete/' . $k['id']) ?>" class="btn btn-sm btn-outline-danger rounded-circle" onclick="return confirm('Yakin ingin menghapus data karyawan ini beserta akun penggunanya?')" title="Hapus">
@@ -85,6 +88,100 @@
 <!-- All Edit Modals (Placed OUTSIDE table for 100% Valid HTML Form Parsing) -->
 <?php if (! empty($karyawanList)): ?>
     <?php foreach ($karyawanList as $k): ?>
+        <!-- Modal Detail Karyawan -->
+        <div class="modal fade" id="modalDetailKaryawan<?= $k['id'] ?>" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content rounded-4 border-0 overflow-hidden shadow-lg">
+                    <div class="modal-header bg-gradient-indigo text-white border-0 py-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="<?= base_url('uploads/karyawan/' . (! empty($k['foto']) ? $k['foto'] : 'default.png')) ?>" class="rounded-circle border border-2 border-white shadow-sm" style="width: 52px; height: 52px; object-fit: cover;" alt="Avatar">
+                            <div>
+                                <h5 class="modal-title fw-bold mb-0 text-white"><?= esc($k['nama']) ?></h5>
+                                <div class="d-flex align-items-center gap-2 mt-1">
+                                    <span class="badge bg-white text-primary fw-mono">NIP: <?= esc($k['nip']) ?></span>
+                                    <span class="badge bg-white-50 text-white border border-white-50"><?= esc($k['nama_jabatan'] ?? '-') ?></span>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4" style="font-size: 0.9rem;">
+                        <div class="row g-4">
+                            <!-- Akun Pengguna -->
+                            <div class="col-12">
+                                <div class="p-3 bg-light rounded-3 border">
+                                    <h6 class="fw-bold text-primary mb-3"><i class="fa-solid fa-user-shield me-2"></i> Akun Pengguna Sistem</h6>
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <small class="text-muted d-block">Username Login</small>
+                                            <strong class="text-dark"><i class="fa-solid fa-at text-muted me-1"></i><?= esc($k['username'] ?? '-') ?></strong>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <small class="text-muted d-block">Alamat Email</small>
+                                            <strong class="text-dark"><i class="fa-solid fa-envelope text-muted me-1"></i><?= esc($k['email'] ?? '-') ?></strong>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <small class="text-muted d-block">Role / Hak Akses</small>
+                                            <span class="badge bg-primary-subtle text-primary fw-bold text-uppercase px-3 py-1"><?= esc($k['role'] ?? 'karyawan') ?></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Informasi Kepegawaian -->
+                            <div class="col-md-6">
+                                <h6 class="fw-bold text-dark border-bottom pb-2 mb-3"><i class="fa-solid fa-id-card me-2 text-indigo"></i> Informasi Kepegawaian</h6>
+                                <table class="table table-sm table-borderless align-middle mb-0">
+                                    <tr>
+                                        <td class="text-muted" style="width: 140px;">Jabatan</td>
+                                        <td class="fw-semibold text-primary"><?= esc($k['nama_jabatan'] ?? '-') ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Gaji Pokok</td>
+                                        <td class="fw-bold text-success">Rp <?= number_format((float)($k['gaji_pokok'] ?? 0), 0, ',', '.') ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Tgl Masuk Kerja</td>
+                                        <td class="fw-semibold"><?= !empty($k['tanggal_masuk']) ? date('d F Y', strtotime($k['tanggal_masuk'])) : '-' ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Jenis Kelamin</td>
+                                        <td class="fw-semibold"><?= ($k['jenis_kelamin'] === 'L') ? 'Laki-laki' : 'Perempuan' ?></td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Informasi Pribadi -->
+                            <div class="col-md-6">
+                                <h6 class="fw-bold text-dark border-bottom pb-2 mb-3"><i class="fa-solid fa-user me-2 text-indigo"></i> Informasi Pribadi & Kontak</h6>
+                                <table class="table table-sm table-borderless align-middle mb-0">
+                                    <tr>
+                                        <td class="text-muted" style="width: 140px;">Tempat, Tgl Lahir</td>
+                                        <td class="fw-semibold"><?= esc($k['tempat_lahir'] ?? '-') ?>, <?= !empty($k['tanggal_lahir']) ? date('d/m/Y', strtotime($k['tanggal_lahir'])) : '-' ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Status Nikah</td>
+                                        <td class="fw-semibold"><?= esc($k['status_nikah'] ?? '-') ?> (<?= esc($k['jumlah_anak'] ?? 0) ?> Anak)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">No. Telp / WA</td>
+                                        <td class="fw-semibold"><i class="fa-solid fa-phone text-muted me-1"></i><?= esc($k['no_telp'] ?? '-') ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Alamat</td>
+                                        <td class="fw-semibold text-break"><?= esc($k['alamat'] ?? '-') ?></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light border-0">
+                        <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="modal fade" id="modalEditKaryawan<?= $k['id'] ?>" tabindex="-1">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content rounded-4 border-0">
