@@ -89,12 +89,17 @@
                                 <span class="badge bg-success-subtle text-success"><?= esc($g['status_bayar']) ?></span>
                             </td>
                             <td class="text-center">
-                                <div class="btn-group">
+                                <div class="btn-group gap-1">
                                     <a href="<?= base_url('penggajian/slip/' . $g['id']) ?>" class="btn btn-sm btn-outline-primary rounded-pill px-3" title="Lihat & Cetak Slip Gaji">
                                         <i class="fa-solid fa-print me-1"></i> Slip
                                     </a>
+                                    <?php if (! empty($g['foto_bukti_transfer'])): ?>
+                                        <a href="<?= base_url('uploads/bukti/' . $g['foto_bukti_transfer']) ?>" target="_blank" class="btn btn-sm btn-outline-success rounded-pill px-3" title="Lihat Bukti Transfer Pembayaran">
+                                            <i class="fa-solid fa-receipt me-1"></i> Bukti Bayar
+                                        </a>
+                                    <?php endif; ?>
                                     <?php if (session()->get('role') === 'admin'): ?>
-                                        <button type="button" class="btn btn-sm btn-outline-success rounded-circle ms-1" data-bs-toggle="modal" data-bs-target="#modalBukti<?= $g['id'] ?>" title="Upload Bukti Transfer">
+                                        <button type="button" class="btn btn-sm btn-outline-success rounded-circle ms-1" data-bs-toggle="modal" data-bs-target="#modalBukti<?= $g['id'] ?>" title="Upload / Edit Bukti Transfer">
                                             <i class="fa-solid fa-upload"></i>
                                         </button>
                                     <?php endif; ?>

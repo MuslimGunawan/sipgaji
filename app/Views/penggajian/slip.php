@@ -138,6 +138,11 @@
         <button onclick="window.print()" class="btn btn-primary rounded-pill px-4">
             <i class="fa-solid fa-print me-1"></i> Cetak / Simpan PDF
         </button>
+        <?php if (! empty($gaji['foto_bukti_transfer'])): ?>
+            <a href="<?= base_url('uploads/bukti/' . $gaji['foto_bukti_transfer']) ?>" target="_blank" class="btn btn-success rounded-pill px-4">
+                <i class="fa-solid fa-file-invoice-dollar me-1"></i> Lihat Bukti Transfer Bayar
+            </a>
+        <?php endif; ?>
         <a href="<?= base_url('penggajian') ?>" class="btn btn-outline-secondary rounded-pill px-4">
             <i class="fa-solid fa-arrow-left me-1"></i> Kembali
         </a>
@@ -254,7 +259,12 @@
         <div class="p-3 bg-success-subtle text-success rounded-3 d-flex flex-column flex-sm-row justify-content-between align-items-center text-center text-sm-start gap-2 mb-5 border border-success-subtle take-home-pay-box">
             <div>
                 <h6 class="fw-bold mb-0 text-success">GAJI BERSIH (TAKE HOME PAY)</h6>
-                <small style="font-size: 0.8rem;">Status Pembayaran: <strong><?= esc($gaji['status_bayar']) ?></strong></small>
+                <small style="font-size: 0.8rem;">
+                    Status Pembayaran: <strong><?= esc($gaji['status_bayar']) ?></strong>
+                    <?php if (! empty($gaji['foto_bukti_transfer'])): ?>
+                        <span class="ms-1">(<a href="<?= base_url('uploads/bukti/' . $gaji['foto_bukti_transfer']) ?>" target="_blank" class="text-success fw-bold text-decoration-underline">Bukti Transfer Terlampir</a>)</span>
+                    <?php endif; ?>
+                </small>
             </div>
             <h3 class="fw-extrabold mb-0 text-success text-nowrap">Rp <?= number_format($gaji['gaji_bersih'], 0, ',', '.') ?></h3>
         </div>

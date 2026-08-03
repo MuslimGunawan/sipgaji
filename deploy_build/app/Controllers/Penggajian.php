@@ -166,10 +166,24 @@ class Penggajian extends BaseController
         $fileBukti = $this->request->getFile('bukti');
         if ($fileBukti->isValid() && ! $fileBukti->hasMoved()) {
             $namaBukti = $fileBukti->getRandomName();
-            $fileBukti->move(FCPATH . 'uploads/bukti', $namaBukti);
 
-            if ($gaji['foto_bukti_transfer'] && file_exists(FCPATH . 'uploads/bukti/' . $gaji['foto_bukti_transfer'])) {
-                @unlink(FCPATH . 'uploads/bukti/' . $gaji['foto_bukti_transfer']);
+            // 1. Save to FCPATH uploads/bukti
+            $fcDir = FCPATH . 'uploads/bukti';
+            if (! is_dir($fcDir)) {
+                @mkdir($fcDir, 0777, true);
+            }
+            $fileBukti->move($fcDir, $namaBukti);
+
+            // 2. Copy to ROOTPATH uploads/bukti for shared hosting compatibility
+            $rootDir = ROOTPATH . 'uploads/bukti';
+            if (! is_dir($rootDir)) {
+                @mkdir($rootDir, 0777, true);
+            }
+            @copy($fcDir . '/' . $namaBukti, $rootDir . '/' . $namaBukti);
+
+            if ($gaji['foto_bukti_transfer']) {
+                @unlink($fcDir . '/' . $gaji['foto_bukti_transfer']);
+                @unlink($rootDir . '/' . $gaji['foto_bukti_transfer']);
             }
 
             $this->penggajianModel->update($id, [
